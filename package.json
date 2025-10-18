@@ -1,0 +1,42 @@
+{
+  "name": "ai-bilder",
+  "version": "0.1.0",
+  "description": "AI builder for websites and apps with cross-platform support and multiple AI providers",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "format": "prettier --write \"src/**/*.{js,ts,json}\" \"tests/**/*.{js,ts,json}\"",
+    "build": "echo 'Build step coming soon'",
+    "migrate": "echo 'Database migrations coming soon'"
+  },
+  "keywords": [
+    "ai",
+    "no-code",
+    "builder",
+    "saas",
+    "flow-builder",
+    "automation"
+  ],
+  "author": "wonderingtribe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wonderingtribe/Ai-bilder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wonderingtribe/Ai-bilder/issues"
+  },
+  "homepage": "https://github.com/wonderingtribe/Ai-bilder#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
