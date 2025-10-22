@@ -5,13 +5,66 @@
   document.addEventListener('DOMContentLoaded', setupSearch)
 
   // Configuration constants
-  const ALGOLIA_APP_ID = 'U0RXNGRK45'
-  const ALGOLIA_SEARCH_ONLY_KEY = 'acd02091c5079d698a0637ca692ebe07'
-  const ALGOLIA_INDEX_NAME = 'circleci-docs'
   let PAGINATION_MAX_VISIBLE_PAGES = 5
   const SEARCH_DEBOUNCE_MS = 300
   const MIN_QUERY_LENGTH = 2
   const MOBILE_BREAKPOINT = 768 // md breakpoint (in pixels)
+
+  // Runtime configuration reader for Algolia
+  function getAlgoliaConfig () {
+    // Check for window.__ALGOLIA_CONFIG__ first
+    if (window.__ALGOLIA_CONFIG__) {
+      return window.__ALGOLIA_CONFIG__
+    }
+
+    // Fallback to meta tags
+    const appIdMeta = document.querySelector('meta[name="algolia-app-id"]')
+    const searchKeyMeta = document.querySelector('meta[name="algolia-search-key"]')
+    const indexNameMeta = document.querySelector('meta[name="algolia-index-name"]')
+
+    if (appIdMeta && searchKeyMeta && indexNameMeta) {
+      return {
+        appId: appIdMeta.content,
+        searchKey: searchKeyMeta.content,
+        indexName: indexNameMeta.content,
+      }
+    }
+
+    return null
+  }
+
+  // Get Algolia configuration
+  const algoliaConfig = getAlgoliaConfig()
+
+  // Early return if Algolia is not configured
+  if (!algoliaConfig || !algoliaConfig.appId || !algoliaConfig.searchKey || !algoliaConfig.indexName) {
+    console.info('Algolia search is disabled. To enable, provide ALGOLIA_APP_ID, ALGOLIA_SEARCH_ONLY_KEY, and ALGOLIA_INDEX_NAME via window.__ALGOLIA_CONFIG__ or environment.')
+    
+    // Hide search UI elements
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchElements = [
+        document.querySelector('header [data-search-input]'),
+        document.querySelector('[data-page-navigation] [data-search-input]'),
+        document.querySelector('header [data-search-clear]'),
+        document.querySelector('[data-page-navigation] [data-search-clear]'),
+        document.querySelector('header [data-search-results-container]'),
+        document.querySelector('[data-page-navigation] [data-search-results-container]'),
+      ]
+
+      searchElements.forEach(function (element) {
+        if (element) {
+          const container = element.closest('.search-container, [class*="search"]') || element.parentElement
+          if (container) {
+            container.style.display = 'none'
+          } else {
+            element.style.display = 'none'
+          }
+        }
+      })
+    })
+
+    return // Exit early, do not initialize search
+  }
 
   function setupSearch () {
     // State variables
@@ -99,9 +152,9 @@
       }
     }
 
-    // Initialize Algolia client
-    const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_ONLY_KEY)
-    const searchIndex = searchClient.initIndex(ALGOLIA_INDEX_NAME)
+    // Initialize Algolia client with runtime config
+    const searchClient = algoliasearch(algoliaConfig.appId, algoliaConfig.searchKey)
+    const searchIndex = searchClient.initIndex(algoliaConfig.indexName)
 
     // ===== SEARCH FUNCTIONALITY =====
 

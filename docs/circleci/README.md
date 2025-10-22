@@ -57,6 +57,30 @@ This technical documentation consists of several specialized files:
    ./scripts/test-setup.sh
    ```
 
+### Enable Search (Optional)
+
+The documentation site includes optional Algolia-powered search functionality. Search is **disabled by default** to prevent accidental exposure of API keys.
+
+To enable search in your local or private deployment:
+
+1. **Obtain Algolia credentials** (do not commit these to the repository):
+   - `ALGOLIA_APP_ID`: Your Algolia application ID
+   - `ALGOLIA_SEARCH_ONLY_KEY`: Your Algolia search-only API key (not the admin key)
+   - `ALGOLIA_INDEX_NAME`: The name of your Algolia search index
+
+2. **Configure via environment variables**:
+   Create or update your `.env` file (this file is gitignored):
+   ```bash
+   ALGOLIA_APP_ID=your_app_id
+   ALGOLIA_SEARCH_ONLY_KEY=your_search_key
+   ALGOLIA_INDEX_NAME=your_index_name
+   ```
+
+3. **Configure in your build**:
+   When building the site, ensure your build configuration passes these values to `site.keys.algolia` in the Antora playbook. The UI will automatically enable search when these keys are present.
+
+**Security Note**: Never commit API keys or credentials to the repository. Always use environment variables and keep sensitive values in `.env` files (which are excluded by `.gitignore`).
+
 ### For API Documentation
 
 This project includes integrated API documentation built with Redocly:
