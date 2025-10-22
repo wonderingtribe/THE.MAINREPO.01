@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci || echo "No dependencies to install yet"
-      
+
       - name: Run linter
         run: npm run lint || echo "Linting not configured yet"
 
@@ -36,19 +36,19 @@ jobs:
         node-version: [18, 20]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci || echo "No dependencies to install yet"
-      
+
       - name: Run tests
         run: npm test || echo "Tests not configured yet"
-      
+
       - name: Upload coverage
         if: matrix.node-version == '18'
         uses: codecov/codecov-action@v4
@@ -59,15 +59,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci || echo "No dependencies to install yet"
-      
+
       - name: Build
         run: npm run build || echo "Build not configured yet"

@@ -1,4 +1,4 @@
-.PHONY: help install dev test lint format clean docker-up docker-down migrate
+.PHONY: help setup install dev test lint format build clean docker-build docker-run docker-up docker-down migrate
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -6,7 +6,16 @@ help: ## Show this help message
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-install: ## Install dependencies
+setup: ## Install dependencies (uses npm ci if package-lock.json exists)
+	@if [ -f package-lock.json ]; then \
+		echo "Installing with npm ci..."; \
+		npm ci; \
+	else \
+		echo "Installing with npm install..."; \
+		npm install; \
+	fi
+
+install: ## Install dependencies (alias for setup)
 	npm install
 
 dev: ## Run development server
@@ -30,6 +39,13 @@ lint-fix: ## Run linter and fix issues
 format: ## Format code
 	npm run format
 
+build: ## Build the project
+	@if grep -q '"build":' package.json; then \
+		npm run build; \
+	else \
+		echo "No build script found, skipping..."; \
+	fi
+
 clean: ## Clean build artifacts and dependencies
 	rm -rf node_modules dist build coverage .nyc_output
 	rm -f package-lock.json
@@ -43,8 +59,13 @@ docker-down: ## Stop Docker containers
 docker-logs: ## Show Docker logs
 	docker-compose logs -f
 
+docker-build: ## Build Docker image
+	docker build -t ai-bilder:local .
+
+docker-run: ## Run Docker container
+	docker run --rm -p 3000:3000 --env-file .env ai-bilder:local
+
 migrate: ## Run database migrations
 	npm run migrate
 
-setup: install docker-up ## Complete setup (install + start services)
-	@echo "Setup complete! Run 'make dev' to start the application."
+.DEFAULT_GOAL := help

@@ -1,6 +1,7 @@
 # AI-bilder Monorepo
 
 This repo hosts multiple projects in one place (monorepo). It combines:
+
 - apps/ai-bilder — the original AI-bilder project
 - apps/ai-wonderland — SaaS app that helps create CircleCI configurations
 - demos/demo-repository — demo code
@@ -22,6 +23,7 @@ This repo hosts multiple projects in one place (monorepo). It combines:
 ## Getting started
 
 Each app has its own setup and commands. For JavaScript apps:
+
 - cd apps/<app-name>
 - npm ci
 - npm test (optional)
