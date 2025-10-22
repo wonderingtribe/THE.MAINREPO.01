@@ -1,28 +1,83 @@
 /**
  * Ai-bilder - Main application entry point
- *
- * This is a placeholder file for the application entry point.
- * The actual application logic will be implemented here.
+ * SaaS AI No-Code Website & Mobile Builder
  */
 
-const http = require('http');
+const config = require('./config');
+const createApp = require('./app');
+const database = require('./database');
 
-const PORT = process.env.PORT || 3000;
+/**
+ * Start the application
+ */
+const start = async () => {
+  try {
+    // eslint-disable-next-line no-console
+    console.log('Starting Ai-bilder...');
+    // eslint-disable-next-line no-console
+    console.log(`Environment: ${config.env}`);
 
-// Simple HTTP server for health checks
-const server = http.createServer((req, res) => {
-  if (req.url === '/health') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ status: 'ok', message: 'Ai-bilder is running' }));
-  } else {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Ai-bilder - Coming Soon\n');
+    // Connect to database
+    await database.connect();
+
+    // Create Express app
+    const app = createApp();
+
+    // Start server
+    const server = app.listen(config.port, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Ai-bilder API server listening on port ${config.port}`);
+      // eslint-disable-next-line no-console
+      console.log(`API URL: ${config.apiUrl}`);
+      // eslint-disable-next-line no-console
+      console.log('Press Ctrl+C to stop');
+    });
+
+    // Graceful shutdown
+    const gracefulShutdown = async () => {
+      // eslint-disable-next-line no-console
+      console.log('\nShutting down gracefully...');
+      
+      server.close(async () => {
+        // eslint-disable-next-line no-console
+        console.log('HTTP server closed');
+        
+        try {
+          await database.disconnect();
+          // eslint-disable-next-line no-console
+          console.log('Database disconnected');
+          process.exit(0);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('Error during shutdown:', error);
+          process.exit(1);
+        }
+      });
+
+      // Force shutdown after 30 seconds
+      setTimeout(() => {
+        // eslint-disable-next-line no-console
+        console.error('Forcefully shutting down');
+        process.exit(1);
+      }, 30000);
+    };
+
+    // Handle shutdown signals
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
+
+    return server;
+
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to start application:', error);
+    process.exit(1);
   }
-});
+};
 
-server.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Ai-bilder server listening on port ${PORT}`);
-});
+// Start if running directly
+if (require.main === module) {
+  start();
+}
 
-module.exports = server;
+module.exports = start;
