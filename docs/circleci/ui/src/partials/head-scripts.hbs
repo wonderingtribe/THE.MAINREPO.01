@@ -6,6 +6,17 @@
     <script>function gtag(){dataLayer.push(arguments)};window.dataLayer=window.dataLayer||[];gtag('js',new Date());gtag('config','{{this}}')</script>
 {{/with}}
 <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+{{#with site.keys.algolia}}
+{{#if appId}}{{#if searchKey}}{{#if indexName}}
+<script>
+  window.__ALGOLIA_CONFIG__ = {
+    appId: '{{appId}}',
+    searchKey: '{{searchKey}}',
+    indexName: '{{indexName}}'
+  };
+</script>
+{{/if}}{{/if}}{{/if}}
+{{/with}}
 {{#with site.keys.segmentWrite }}
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script>

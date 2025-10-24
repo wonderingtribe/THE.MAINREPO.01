@@ -37,10 +37,12 @@ This document summarizes all the files and structure added to ensure the Ai-bild
 ### 📁 Directory Structure
 
 #### Source Code
+
 - **`src/`** - Application source code (with README explaining structure)
 - **`tests/`** - Test files (with README for testing guidelines)
 
 #### Documentation
+
 - **`docs/`** - Comprehensive documentation structure:
   - `docs/api/` - API documentation
   - `docs/architecture/` - System architecture and design
@@ -52,11 +54,13 @@ This document summarizes all the files and structure added to ensure the Ai-bild
 ### 🤖 GitHub Integration
 
 #### Issue & PR Templates
+
 - **`.github/ISSUE_TEMPLATE/bug_report.md`** - Bug report template
 - **`.github/ISSUE_TEMPLATE/feature_request.md`** - Feature request template
 - **`.github/pull_request_template.md`** - Pull request template
 
 #### Automation
+
 - **`.github/dependabot.yml`** - Automated dependency updates
 - **`.github/workflows/ci.yml`** - Continuous Integration workflow
 - **`.github/workflows/codeql.yml`** - Security scanning workflow
@@ -66,6 +70,7 @@ This document summarizes all the files and structure added to ensure the Ai-bild
 ### Getting Started
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    # or for Python:
@@ -73,12 +78,14 @@ This document summarizes all the files and structure added to ensure the Ai-bild
    ```
 
 2. **Configure environment:**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 3. **Start local services:**
+
    ```bash
    make docker-up
    # or
@@ -95,6 +102,7 @@ This document summarizes all the files and structure added to ensure the Ai-bild
 ### Common Commands
 
 Using the Makefile:
+
 - `make help` - Show all available commands
 - `make install` - Install dependencies
 - `make dev` - Start development server
@@ -118,12 +126,14 @@ Using the Makefile:
 ### Immediate Actions Needed
 
 1. **Install Node.js dependencies** that match your project needs:
+
    ```bash
    npm install express dotenv
    npm install --save-dev nodemon jest eslint prettier
    ```
 
 2. **Or install Python dependencies** if using Python:
+
    ```bash
    pip install flask psycopg2-binary redis python-dotenv
    pip install pytest pytest-cov

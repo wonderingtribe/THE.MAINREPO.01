@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Docs
+docs/
+
+# Configuration files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Temporary files
+tmp/
+temp/
+
+# Environment files
+.env
+.env.*
+
+# Generated files
+CHANGELOG.md

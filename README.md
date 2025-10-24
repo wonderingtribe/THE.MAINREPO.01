@@ -1,38 +1,63 @@
-# AI-bilder Monorepo
+# AI-Bilder
 
-This repo hosts multiple projects in one place (monorepo). It combines:
-- apps/ai-bilder — the original AI-bilder project
-- apps/ai-wonderland — SaaS app that helps create CircleCI configurations
-- demos/demo-repository — demo code
-- docs/circleci — CircleCI documentation (verify licensing for redistribution)
+**SaaS AI-powered No-Code Builder for Websites & Mobile Apps**
 
-## Structure
+## Overview
 
+AI-Bilder is a cross-platform no-code builder that lets users create websites and mobile apps using drag-and-drop tools and multiple AI integrations. It provides easy export to mobile, domain management, and API keys, with a focus on accessibility for everyone.
+
+## Features
+
+- Drag-and-drop builder for websites and mobile apps
+- Multiple AI integrations (text, image, code, etc.)
+- API key management
+- Custom domain provisioning
+- User authentication & SaaS billing
+- Cross-platform: export for web and mobile (React Native)
+- Built with JavaScript, Docker, and Makefile
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js & npm
+- Docker (optional, for deployment)
+- Git
+
+### Setup
+
+```bash
+git clone https://github.com/AI-WONDER-LABs/Ai-bilder.git
+cd Ai-bilder
+npm install
 ```
-.
-├─ apps/
-│  ├─ ai-bilder/
-│  └─ ai-wonderland/
-├─ demos/
-│  └─ demo-repository/
-└─ docs/
-   └─ circleci/
+
+### Running Locally
+
+```bash
+npm start
 ```
 
-## Getting started
+### Running with Docker
 
-Each app has its own setup and commands. For JavaScript apps:
-- cd apps/<app-name>
-- npm ci
-- npm test (optional)
+```bash
+docker build -t ai-bilder .
+docker run -p 3000:3000 ai-bilder
+```
 
-If an app uses another language/toolchain, see its README in that folder.
+## Documentation
 
-## CI
+- [Getting Started Guide](docs/getting-started.md)
+- [User Guide](docs/user-guide.md)
+- [Developer Guide](docs/developer-guide.md)
+- [API Reference](docs/api-reference.md)
+- [AI Integrations](docs/ai-integrations.md)
+- [FAQ](docs/faq.md)
 
-A simple GitHub Actions workflow runs on push/PR. You can expand it later for other languages.
+## Contributing
 
-## Notes
+See [CONTRIBUTING.md](docs/contributing.md) for guidelines.
 
-- Original repositories will be archived after the monorepo PR merges so their full history and PRs remain accessible in read-only mode.
-- If you ever want full git history inside this monorepo later, we can import it then without affecting your archived repos.
+## License
+
+[MIT](LICENSE)

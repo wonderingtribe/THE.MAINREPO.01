@@ -32,6 +32,13 @@ Please describe the tests that you ran to verify your changes.
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published
 
+## Security Checklist
+
+- [ ] No secrets or API keys are committed in the code
+- [ ] Input validation has been implemented where necessary
+- [ ] Security implications have been considered
+- [ ] Dependencies have been checked for known vulnerabilities
+
 ## Screenshots (if applicable)
 
 Add screenshots to help explain your changes.
