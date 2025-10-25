@@ -1,6 +1,7 @@
 /**
  * Application Configuration
  * Loads and validates environment variables
+ * Security: Ensures sensitive configuration is properly managed
  */
 
 require('dotenv').config();
