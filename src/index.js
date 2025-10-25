@@ -37,11 +37,11 @@ const start = async () => {
     const gracefulShutdown = async () => {
       // eslint-disable-next-line no-console
       console.log('\nShutting down gracefully...');
-      
+
       server.close(async () => {
         // eslint-disable-next-line no-console
         console.log('HTTP server closed');
-        
+
         try {
           await database.disconnect();
           // eslint-disable-next-line no-console
@@ -67,7 +67,6 @@ const start = async () => {
     process.on('SIGINT', gracefulShutdown);
 
     return server;
-
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Failed to start application:', error);

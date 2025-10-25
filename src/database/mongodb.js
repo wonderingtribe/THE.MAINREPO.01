@@ -26,7 +26,7 @@ const connectMongoDB = async () => {
     // eslint-disable-next-line no-console
     console.log('MongoDB connected successfully');
 
-    mongoose.connection.on('error', (err) => {
+    mongoose.connection.on('error', err => {
       // eslint-disable-next-line no-console
       console.error('MongoDB connection error:', err);
     });
@@ -36,7 +36,6 @@ const connectMongoDB = async () => {
       console.log('MongoDB disconnected');
       isConnected = false;
     });
-
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('MongoDB connection failed:', error);

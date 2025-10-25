@@ -9,7 +9,7 @@ const config = require('../config');
 /**
  * Generate access token
  */
-const generateAccessToken = (userId) => {
+const generateAccessToken = userId => {
   return jwt.sign({ userId }, config.jwt.secret, {
     expiresIn: config.jwt.expiresIn,
   });
@@ -18,7 +18,7 @@ const generateAccessToken = (userId) => {
 /**
  * Generate refresh token
  */
-const generateRefreshToken = (userId) => {
+const generateRefreshToken = userId => {
   return jwt.sign({ userId }, config.jwt.refreshSecret, {
     expiresIn: config.jwt.refreshExpiresIn,
   });
@@ -27,7 +27,7 @@ const generateRefreshToken = (userId) => {
 /**
  * Verify access token
  */
-const verifyAccessToken = (token) => {
+const verifyAccessToken = token => {
   try {
     return jwt.verify(token, config.jwt.secret);
   } catch (error) {
@@ -38,7 +38,7 @@ const verifyAccessToken = (token) => {
 /**
  * Verify refresh token
  */
-const verifyRefreshToken = (token) => {
+const verifyRefreshToken = token => {
   try {
     return jwt.verify(token, config.jwt.refreshSecret);
   } catch (error) {

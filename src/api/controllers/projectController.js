@@ -206,7 +206,7 @@ const publishProject = async (req, res) => {
 
     project.status = 'published';
     project.metadata.lastPublishedAt = new Date();
-    
+
     // Generate a subdomain if not exists
     if (!project.domain) {
       const subdomain = `${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${project._id.toString().substring(0, 8)}`;
@@ -219,7 +219,7 @@ const publishProject = async (req, res) => {
     res.json({
       success: true,
       message: 'Project published successfully',
-      data: { 
+      data: {
         project,
         publishedUrl: project.metadata.publishedUrl,
       },

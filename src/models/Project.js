@@ -67,12 +67,14 @@ const projectSchema = new mongoose.Schema(
     metadata: {
       lastPublishedAt: Date,
       publishedUrl: String,
-      mobileExports: [{
-        platform: String,
-        version: String,
-        exportedAt: Date,
-        downloadUrl: String,
-      }],
+      mobileExports: [
+        {
+          platform: String,
+          version: String,
+          exportedAt: Date,
+          downloadUrl: String,
+        },
+      ],
     },
     isPublic: {
       type: Boolean,

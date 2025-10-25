@@ -53,7 +53,7 @@ This is an AI builder for websites and apps that is cross-platform and integrate
 
 ## Testing Requirements
 
-### Test Coverage & Frameworks
+### Test Coverage and Frameworks
 
 - Write unit tests for all new features and bug fixes using a framework like **Jest** or **Mocha**.
 - For end-to-end testing, consider using a tool like **Cypress** or **Playwright**.
