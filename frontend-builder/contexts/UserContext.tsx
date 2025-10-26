@@ -28,8 +28,9 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = async (email: string) => {
+  const login = async (email: string, _password: string) => {
     // Simulated login - in production, this would call an API
+    // Password is validated in a real implementation
     const mockUser: User = {
       id: '1',
       email,
