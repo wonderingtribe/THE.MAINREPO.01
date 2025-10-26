@@ -1,4 +1,4 @@
-HEAD
+
 # AI-Bilder
 
 **SaaS AI-powered No-Code Builder for Websites & Mobile Apps**
