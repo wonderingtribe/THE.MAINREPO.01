@@ -55,9 +55,12 @@ const errorHandler = (err, req, res, _next) => {
 
   // Default error - don't expose internal error details in production
   const statusCode = err.statusCode || 500;
-  const message = statusCode === 500 && config.env === 'production'
-    ? 'Internal server error'
-    : err.message || 'Internal server error';
+  let message = err.message || 'Internal server error';
+  
+  // Hide internal error messages in production for 500 errors
+  if (statusCode === 500 && config.env === 'production') {
+    message = 'Internal server error';
+  }
 
   res.status(statusCode).json({
     success: false,

@@ -49,6 +49,10 @@ const authenticate = async (req, res, next) => {
 /**
  * Middleware to verify API key
  * Uses constant-time comparison to prevent timing attacks
+ * 
+ * Note: This implementation uses an indexed database query for performance,
+ * followed by constant-time comparison. For maximum security against timing attacks,
+ * consider storing hashed API keys in the database and comparing hashes.
  */
 const authenticateApiKey = async (req, res, next) => {
   try {
@@ -62,6 +66,7 @@ const authenticateApiKey = async (req, res, next) => {
     }
 
     // Find user by API key (indexed query for performance)
+    // Note: For maximum timing attack protection, consider using hashed API keys
     const user = await User.findOne({ apiKey, isActive: true });
     
     if (!user || !user.apiKey) {
@@ -71,7 +76,7 @@ const authenticateApiKey = async (req, res, next) => {
       });
     }
 
-    // Additional constant-time comparison to prevent timing attacks
+    // Additional constant-time comparison to prevent timing attacks at application level
     const apiKeyBuffer = Buffer.from(apiKey);
     const userApiKeyBuffer = Buffer.from(user.apiKey);
     
