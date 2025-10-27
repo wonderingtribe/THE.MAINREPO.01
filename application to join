@@ -1,0 +1,35 @@
+---
+name: "Application to join the project"
+about: "Use this to apply for membership, contributor access, or to join our team"
+title: "[Application] Your Name — Role"
+labels: ["application", "triage"]
+assignees: []
+---
+
+Please fill out the sections below. We will review your application and respond.
+
+**GitHub username**
+- @
+
+**Full name**
+
+**Email (optional)**
+
+**Which role are you applying for?**
+- (e.g. contributor, maintainer, reviewer, designer, docs)
+
+**Which repositories or projects do you want access to?**
+- (list owner/repo names)
+
+**Skills & relevant experience**
+- (brief bullets, links to portfolio/GitHub/LinkedIn)
+
+**Availability (hours per week / timezone)**
+
+**Why do you want to join this project?**
+
+**Example contributions (link to PRs, issues, or sample work)**
+
+**I agree to follow org/project guidelines (yes/no)**
+
+<!-- Maintainers: review, then comment + invite via Settings → Manage access (or use gh/api). -->
