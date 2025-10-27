@@ -1,10 +1,25 @@
 /**
  * Error Handler Middleware
+ * Sanitizes error responses to prevent information disclosure
  */
 
+const config = require('../../config');
+
 const errorHandler = (err, req, res, _next) => {
-  // eslint-disable-next-line no-console
-  console.error('Error:', err);
+  // Log error details only in development (not to client)
+  if (config.env === 'development') {
+    // eslint-disable-next-line no-console
+    console.error('Error:', err);
+  } else {
+    // In production, log only essential error info without stack traces
+    // eslint-disable-next-line no-console
+    console.error('Error:', {
+      name: err.name,
+      message: err.message,
+      code: err.code,
+      statusCode: err.statusCode,
+    });
+  }
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {
@@ -38,10 +53,18 @@ const errorHandler = (err, req, res, _next) => {
     });
   }
 
-  // Default error
-  res.status(err.statusCode || 500).json({
+  // Default error - don't expose internal error details in production
+  const statusCode = err.statusCode || 500;
+  let message = err.message || 'Internal server error';
+  
+  // Hide internal error messages in production for 500 errors
+  if (statusCode === 500 && config.env === 'production') {
+    message = 'Internal server error';
+  }
+
+  res.status(statusCode).json({
     success: false,
-    message: err.message || 'Internal server error',
+    message: message,
   });
 };
 
