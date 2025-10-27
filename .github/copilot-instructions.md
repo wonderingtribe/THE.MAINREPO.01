@@ -1,9 +1,24 @@
-<<<<<<< HEAD
-# GitHub Copilot Instructions for Ai-bilder
+# GitHub Copilot Instructions for AI-WONDERLAND
 
 ## Project Overview
 
-This is an AI builder for websites and apps that is cross-platform and integrates with multiple AI services. The project provides API keys, domains, and related services to users. This is primarily a JavaScript project, containerized with Docker to ensure multiplatform compatibility.
+This is a comprehensive AI builder for websites and apps that combines a powerful backend API with a modern React/Next.js frontend. The project is cross-platform, integrates with multiple AI services, and provides API keys, domains, and related services to users. It features drag-and-drop UI construction, code export, multi-page editing, AI model integration, API generator, domain management, and analytics. This project is containerized with Docker to ensure multiplatform compatibility.
+
+## Preferred Technologies
+
+### Backend
+- Node.js/Express for REST API
+- MongoDB (via Mongoose) and PostgreSQL (via Sequelize) for data storage
+- Redis for caching
+- JWT for authentication
+- Docker for containerization
+
+### Frontend
+- React 19 (with functional components and hooks)
+- Next.js 16 (for SSR/SSG)
+- Tailwind CSS for styling
+- Framer Motion for animations
+- @dnd-kit and react-dnd for drag-and-drop functionality
 
 ## Code Style and Standards
 
@@ -12,6 +27,12 @@ This is an AI builder for websites and apps that is cross-platform and integrate
 - Write clean, readable, and maintainable code.
 - Follow consistent naming conventions. Use `camelCase` for variables and functions, and `PascalCase` for classes.
 - Keep functions small and focused on a single responsibility.
+- Use ES6+ syntax throughout
+- Favor arrow functions and functional React components
+- Prefer composition over inheritance
+- Use Context API and custom hooks for state management
+- Use PropTypes or TypeScript (optional) for type safety
+- Prefer async/await for asynchronous code
 
 ### JavaScript Best Practices
 
@@ -75,6 +96,52 @@ This is an AI builder for websites and apps that is cross-platform and integrate
 - Cache AI responses when appropriate to improve performance and reduce costs.
 - Document which AI services are being used, their purpose, and their API versions.
 - Consider fallback options or graceful degradation when AI services are unavailable.
+- Provide connectors for user-supplied and built-in AI models
+
+## Project Structure
+
+### Backend Structure
+- `src/api/`: API controllers, routes, and middleware
+- `src/auth/`: Authentication and authorization logic
+- `src/config/`: Configuration management
+- `src/database/`: Database connections and models
+- `src/models/`: Data models (User, Project, etc.)
+
+### Frontend Structure
+- `src/components/builder/`: Drag-and-drop canvas, sidebar, toolbar
+- `src/components/editor/`: Code editor integration (Monaco, CodeMirror)
+- `src/components/preview/`: Live preview modules
+- `src/components/pages/`: Multi-page and routing logic
+- `src/components/ai/`: AI integration widgets
+- `src/components/auth/`: Authentication forms
+- `src/components/api/`: API connector UI
+- `src/components/marketplace/`: Component/plugin marketplace
+- `src/components/templates/`: Template gallery/importer
+- `src/components/domain/`: Domain management UI
+- `src/components/analytics/`: Analytics widgets
+- `src/context/`: React contexts for state/user/builder
+- `src/hooks/`: Custom React hooks
+- `src/services/`: API and integration logic
+- `src/utils/`: Helper utilities
+- `src/styles/`: Global and component styles
+
+## Special Instructions
+
+### Frontend Features
+- For drag-and-drop logic, use react-dnd or @dnd-kit
+- For live code editing, use Monaco Editor or CodeMirror
+- For code export, generate clean HTML/JSX or Next.js code
+- For authentication, support Auth0, Firebase Auth, or Supabase Auth
+- For domains, support manual assignment and future reseller API integration
+- For analytics, integrate Google Analytics or similar tools
+
+### Backend Features
+- Use Express with proper middleware (helmet, cors, rate limiting)
+- Implement JWT-based authentication with refresh tokens
+- Use Joi for input validation
+- Support both MongoDB and PostgreSQL databases
+- Implement Redis caching for performance
+- Integrate with Stripe for payments
 
 ## Dependencies and Packages
 
@@ -103,69 +170,23 @@ This is an AI builder for websites and apps that is cross-platform and integrate
 - Ensure all code passes CI checks (linting, testing, building) before merging. Configure these checks in **GitHub Actions**.
 - Fix failing tests promptly.
 - Monitor GitHub Actions workflows for build and test results.
-=======
-# Copilot Instructions for frontend-builder
-
-## Project Purpose
-
-This repository is an advanced React/Next.js SaaS website and app builder.  
-It features drag-and-drop UI construction, code export, multi-page editing, AI model integration, API generator, domain management, analytics, and more.
-
-## Preferred Technologies
-
-- React (with functional components and hooks)
-- Next.js (for SSR/SSG, if used)
-- Material-UI, Ant Design, or Tailwind CSS for styling
-- Node.js/Express or Python/FastAPI for backend API (if applicable)
-- Uses modular folder structure for components, contexts, hooks, services, etc.
-
-## Coding Style
-
-- Use ES6+ syntax throughout
-- Favor arrow functions and functional React components
-- Prefer composition over inheritance
-- Use Context API and custom hooks for state management
-- Use PropTypes or TypeScript (optional) for type safety
-- Prefer async/await for asynchronous code
-
-## Project Structure
-
-- `src/components/builder/`: Drag-and-drop canvas, sidebar, toolbar
-- `src/components/editor/`: Code editor integration (Monaco, CodeMirror)
-- `src/components/preview/`: Live preview modules
-- `src/components/pages/`: Multi-page and routing logic
-- `src/components/ai/`: AI integration widgets
-- `src/components/auth/`: Authentication forms
-- `src/components/api/`: API connector UI
-- `src/components/marketplace/`: Component/plugin marketplace
-- `src/components/templates/`: Template gallery/importer
-- `src/components/domain/`: Domain management UI
-- `src/components/analytics/`: Analytics widgets
-- `src/context/`: React contexts for state/user/builder
-- `src/hooks/`: Custom React hooks
-- `src/services/`: API and integration logic
-- `src/utils/`: Helper utilities
-- `src/styles/`: Global and component styles
-
-## Special Instructions
-
-- For drag-and-drop logic, use react-dnd or similar library
-- For live code editing, use Monaco Editor or CodeMirror
-- For code export, generate clean HTML/JSX or Next.js code
-- For AI integration, provide connectors for user-supplied and built-in models
-- For authentication, support Auth0, Firebase Auth, or Supabase Auth
-- For domains, support manual assignment and future reseller API integration
-- For analytics, integrate Google Analytics or similar tools
 
 ## Example Tasks
 
+### Frontend Tasks
 - Suggest code for adding new UI components to the builder
 - Suggest code for implementing multi-page navigation
 - Suggest code for integrating a REST API
 - Suggest code for exporting user projects as HTML/React/Next.js code
 - Suggest code for adding authentication and user management
 
+### Backend Tasks
+- Suggest code for creating new API endpoints
+- Suggest code for implementing authentication flows
+- Suggest code for database migrations
+- Suggest code for integrating new AI providers
+- Suggest code for implementing caching strategies
+
 ---
 
 This file is intended to help GitHub Copilot provide context-aware, high-quality suggestions for this project.
->>>>>>> frontend/main
