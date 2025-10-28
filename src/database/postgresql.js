@@ -9,7 +9,6 @@ let sequelize = null;
 
 const connectPostgreSQL = async () => {
   if (sequelize) {
-    // eslint-disable-next-line no-console
     console.log('Using existing PostgreSQL connection');
     return sequelize;
   }
@@ -21,7 +20,6 @@ const connectPostgreSQL = async () => {
       host,
       port,
       dialect: 'postgres',
-      // eslint-disable-next-line no-console
       logging: config.env === 'development' ? console.log : false,
       pool: {
         max: 5,
@@ -32,12 +30,10 @@ const connectPostgreSQL = async () => {
     });
 
     await sequelize.authenticate();
-    // eslint-disable-next-line no-console
     console.log('PostgreSQL connected successfully');
 
     return sequelize;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('PostgreSQL connection failed:', error);
     throw error;
   }
@@ -51,10 +47,8 @@ const disconnectPostgreSQL = async () => {
   try {
     await sequelize.close();
     sequelize = null;
-    // eslint-disable-next-line no-console
     console.log('PostgreSQL disconnected successfully');
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('PostgreSQL disconnection failed:', error);
     throw error;
   }

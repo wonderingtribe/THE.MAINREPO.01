@@ -22,10 +22,8 @@ const connect = async () => {
     } else {
       throw new Error(`Unsupported database type: ${dbType}`);
     }
-    // eslint-disable-next-line no-console
     console.log(`Connected to ${dbType} database`);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Database connection error:', error);
     throw error;
   }
@@ -42,7 +40,6 @@ const disconnect = async () => {
     }
     db = null;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Database disconnection error:', error);
     throw error;
   }

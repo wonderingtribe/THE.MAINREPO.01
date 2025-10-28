@@ -8,11 +8,9 @@ const config = require('../../config');
 const errorHandler = (err, req, res, _next) => {
   // Log error details only in development (not to client)
   if (config.env === 'development') {
-    // eslint-disable-next-line no-console
     console.error('Error:', err);
   } else {
     // In production, log only essential error info without stack traces
-    // eslint-disable-next-line no-console
     console.error('Error:', {
       name: err.name,
       message: err.message,

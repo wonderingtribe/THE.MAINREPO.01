@@ -41,7 +41,7 @@ const createProject = async (req, res) => {
       data: { project },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Create project error:', error);
     res.status(500).json({
       success: false,
@@ -83,7 +83,7 @@ const getProjects = async (req, res) => {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Get projects error:', error);
     res.status(500).json({
       success: false,
@@ -112,7 +112,7 @@ const getProject = async (req, res) => {
       data: { project },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Get project error:', error);
     res.status(500).json({
       success: false,
@@ -151,7 +151,7 @@ const updateProject = async (req, res) => {
       data: { project },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Update project error:', error);
     res.status(500).json({
       success: false,
@@ -180,7 +180,7 @@ const deleteProject = async (req, res) => {
       message: 'Project deleted successfully',
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Delete project error:', error);
     res.status(500).json({
       success: false,
@@ -225,7 +225,7 @@ const publishProject = async (req, res) => {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('Publish project error:', error);
     res.status(500).json({
       success: false,

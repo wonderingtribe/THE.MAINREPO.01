@@ -79,7 +79,6 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Registration error:', error);
     res.status(500).json({
       success: false,
@@ -147,7 +146,6 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Login error:', error);
     res.status(500).json({
       success: false,
