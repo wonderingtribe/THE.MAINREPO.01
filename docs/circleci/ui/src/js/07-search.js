@@ -6,18 +6,60 @@
 
   // Helper function to sanitize HTML and only allow specific highlight tags
   function sanitizeHighlightedText (highlightedValue) {
-    // Create a temporary div to parse the HTML
-    const tempDiv = document.createElement('div')
-    tempDiv.textContent = highlightedValue // This escapes all HTML
+    // Input validation
+    if (!highlightedValue || typeof highlightedValue !== 'string') {
+      return ''
+    }
     
-    // Get the escaped text and replace the escaped highlight tags with actual tags
-    let sanitized = tempDiv.innerHTML
+    // Use DOMParser for more robust HTML parsing
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(highlightedValue, 'text/html')
     
-    // Only allow our specific highlight tags back in
-    sanitized = sanitized.replace(/&lt;strong class="font-bold"&gt;/g, '<strong class="font-bold">')
-    sanitized = sanitized.replace(/&lt;\/strong&gt;/g, '</strong>')
+    // Walk through all nodes and only keep text and allowed strong elements
+    function sanitizeNode (node) {
+      const allowedTagName = 'STRONG'
+      const allowedClass = 'font-bold'
+      
+      if (node.nodeType === Node.TEXT_NODE) {
+        return document.createTextNode(node.textContent)
+      }
+      
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        // Only allow <strong> elements with the exact class we expect
+        if (node.tagName === allowedTagName && 
+            node.className === allowedClass &&
+            node.attributes.length === 1) { // Only has class attribute
+          const strong = document.createElement('strong')
+          strong.className = allowedClass
+          Array.from(node.childNodes).forEach(child => {
+            const sanitizedChild = sanitizeNode(child)
+            if (sanitizedChild) strong.appendChild(sanitizedChild)
+          })
+          return strong
+        }
+        
+        // For any other element, just extract and sanitize its text content
+        const fragment = document.createDocumentFragment()
+        Array.from(node.childNodes).forEach(child => {
+          const sanitizedChild = sanitizeNode(child)
+          if (sanitizedChild) fragment.appendChild(sanitizedChild)
+        })
+        return fragment
+      }
+      
+      return null
+    }
     
-    return sanitized
+    const sanitizedFragment = document.createDocumentFragment()
+    Array.from(doc.body.childNodes).forEach(child => {
+      const sanitizedChild = sanitizeNode(child)
+      if (sanitizedChild) sanitizedFragment.appendChild(sanitizedChild)
+    })
+    
+    // Convert back to HTML string
+    const container = document.createElement('div')
+    container.appendChild(sanitizedFragment)
+    return container.innerHTML
   }
 
   // Configuration constants
