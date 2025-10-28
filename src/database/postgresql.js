@@ -6,6 +6,7 @@ const { Sequelize } = require('sequelize');
 const config = require('../config');
 
 let sequelize = null;
+let models = {};
 
 const connectPostgreSQL = async () => {
   if (sequelize) {
@@ -32,6 +33,30 @@ const connectPostgreSQL = async () => {
     await sequelize.authenticate();
     console.log('PostgreSQL connected successfully');
 
+    // Initialize models
+    const defineUserModel = require('../models/UserPostgres');
+    const defineProjectModel = require('../models/ProjectPostgres');
+
+    models.User = defineUserModel(sequelize);
+    models.Project = defineProjectModel(sequelize);
+
+    // Set up associations
+    models.User.hasMany(models.Project, {
+      foreignKey: 'user_id',
+      as: 'projects',
+    });
+    models.Project.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
+    });
+
+    // Sync models (create tables if they don't exist)
+    // In production, use migrations instead
+    if (config.env === 'development') {
+      await sequelize.sync({ alter: false });
+      console.log('PostgreSQL models synchronized');
+    }
+
     return sequelize;
   } catch (error) {
     console.error('PostgreSQL connection failed:', error);
@@ -47,6 +72,7 @@ const disconnectPostgreSQL = async () => {
   try {
     await sequelize.close();
     sequelize = null;
+    models = {};
     console.log('PostgreSQL disconnected successfully');
   } catch (error) {
     console.error('PostgreSQL disconnection failed:', error);
@@ -55,10 +81,12 @@ const disconnectPostgreSQL = async () => {
 };
 
 const getSequelize = () => sequelize;
+const getModels = () => models;
 
 module.exports = {
   connectPostgreSQL,
   disconnectPostgreSQL,
   getSequelize,
+  getModels,
   Sequelize,
 };
