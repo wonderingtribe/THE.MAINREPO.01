@@ -315,22 +315,35 @@ npm test
 5. **Rate Limiting**: API endpoints are rate-limited
 6. **CORS**: Configured to accept requests from allowed origins
 7. **Helmet**: Security headers configured
+8. **Token Storage**: Currently using localStorage (consider HttpOnly cookies for production to mitigate XSS attacks)
 
 ## Environment Variables
 
 Required in `.env`:
 ```env
 # JWT Configuration
-JWT_SECRET=your-secret-key-change-this-in-production
+# IMPORTANT: Generate strong random secrets using: openssl rand -base64 64
+# NEVER use these example values in production!
+JWT_SECRET=CHANGE_THIS_TO_A_CRYPTOGRAPHICALLY_SECURE_RANDOM_STRING_IN_PRODUCTION
 JWT_EXPIRES_IN=7d
-JWT_REFRESH_SECRET=your-refresh-secret-key-change-this-in-production
+JWT_REFRESH_SECRET=CHANGE_THIS_TO_A_DIFFERENT_CRYPTOGRAPHICALLY_SECURE_RANDOM_STRING_IN_PRODUCTION
 JWT_REFRESH_EXPIRES_IN=30d
 
 # Database (MongoDB)
-MONGODB_URI=mongodb://localhost:27017/ai-bilder
+# Database name matches the application
+MONGODB_URI=mongodb://localhost:27017/ai_wonderland
 
 # API URL (Frontend)
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
+
+**Security Note**: To generate secure secrets, use:
+```bash
+# Linux/Mac
+openssl rand -base64 64
+
+# Node.js
+node -e "console.log(require('crypto').randomBytes(64).toString('base64'))"
 ```
 
 ## Common Issues

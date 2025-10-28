@@ -104,7 +104,7 @@ const published = await projectService.publishProject('project-id');
 ## Token Management
 
 Tokens are automatically stored in localStorage when you login or register:
-- `accessToken` - Short-lived token for API requests (7 days default)
+- `accessToken` - API access token (7 days default, shorter than refresh token)
 - `refreshToken` - Long-lived token for refreshing access tokens (30 days default)
 
 The services automatically include the access token in the Authorization header:
@@ -171,7 +171,7 @@ if (result.success) {
 
 ## Security Considerations
 
-- Tokens are stored in localStorage (consider HttpOnly cookies for enhanced security in production)
+- **IMPORTANT**: Tokens are currently stored in localStorage. For production applications, consider using HttpOnly cookies with secure and SameSite flags to prevent XSS attacks. This requires backend cookie handling implementation.
 - Always use HTTPS in production
 - The backend validates all tokens using JWT
 - Passwords are hashed with bcrypt on the backend
