@@ -25,7 +25,7 @@ const eslintConfig = defineConfig([
   ]),
   // Backend CommonJS files configuration
   {
-    files: ["src/**/*.js", "tests/**/*.js"],
+    files: ["src/**/*.js", "tests/**/*.js", "scripts/**/*.js", "examples/**/*.js"],
     rules: {
       "@typescript-eslint/no-require-imports": "off",
       "no-console": "off",

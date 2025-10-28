@@ -1,28 +1,31 @@
 /**
  * Database Connection Manager
- * Handles connection to either MongoDB or PostgreSQL based on configuration
+ * Handles connections to both MongoDB and PostgreSQL
+ * PostgreSQL stores user and project metadata
+ * MongoDB stores flexible project content (JSON structure)
  */
 
-const config = require('../config');
-
-let db = null;
+let connections = {
+  mongodb: false,
+  postgresql: false,
+};
 
 const connect = async () => {
-  const dbType = config.database.type;
-
   try {
-    if (dbType === 'mongodb') {
-      const { connectMongoDB } = require('./mongodb');
-      await connectMongoDB();
-      db = 'mongodb';
-    } else if (dbType === 'postgresql') {
-      const { connectPostgreSQL } = require('./postgresql');
-      await connectPostgreSQL();
-      db = 'postgresql';
-    } else {
-      throw new Error(`Unsupported database type: ${dbType}`);
-    }
-    console.log(`Connected to ${dbType} database`);
+    // Connect to both databases for hybrid approach
+    // PostgreSQL for structured metadata
+    const { connectPostgreSQL } = require('./postgresql');
+    await connectPostgreSQL();
+    connections.postgresql = true;
+    console.log('Connected to PostgreSQL database');
+
+    // MongoDB for flexible project content
+    const { connectMongoDB } = require('./mongodb');
+    await connectMongoDB();
+    connections.mongodb = true;
+    console.log('Connected to MongoDB database');
+
+    console.log('All databases connected successfully');
   } catch (error) {
     console.error('Database connection error:', error);
     throw error;
@@ -31,21 +34,29 @@ const connect = async () => {
 
 const disconnect = async () => {
   try {
-    if (db === 'mongodb') {
+    if (connections.mongodb) {
       const { disconnectMongoDB } = require('./mongodb');
       await disconnectMongoDB();
-    } else if (db === 'postgresql') {
+      connections.mongodb = false;
+    }
+
+    if (connections.postgresql) {
       const { disconnectPostgreSQL } = require('./postgresql');
       await disconnectPostgreSQL();
+      connections.postgresql = false;
     }
-    db = null;
+
+    console.log('All databases disconnected');
   } catch (error) {
     console.error('Database disconnection error:', error);
     throw error;
   }
 };
 
+const getConnections = () => connections;
+
 module.exports = {
   connect,
   disconnect,
+  getConnections,
 };
