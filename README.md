@@ -135,8 +135,6 @@ frontend-builder/
 
 ### Prerequisites
 
-       HEAD
-
 - Node.js & npm
 - Docker (optional, for deployment)
 - Git
