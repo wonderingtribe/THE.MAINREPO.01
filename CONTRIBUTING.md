@@ -65,6 +65,8 @@ Thank you for your interest in contributing to Ai-bilder! This document provides
 
 ### Coding Standards
 
+- **GitHub Copilot Instructions**: This repository includes comprehensive coding instructions for GitHub Copilot in `.github/copilot-instructions.md`. These instructions help ensure consistent code generation and provide context about our project structure, technologies, and best practices.
+
 - **Linting**: We use ESLint for code quality
 
   ```bash

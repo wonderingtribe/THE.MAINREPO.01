@@ -1,4 +1,3 @@
-
 # AI-Bilder
 
 **SaaS AI-powered No-Code Builder for Websites & Mobile Apps**
@@ -24,42 +23,49 @@ A powerful React/Next.js SaaS website and app builder with drag-and-drop UI, cod
 ## Features
 
 ### ✨ Drag & Drop UI Builder
+
 - Intuitive visual editor for building websites without code
 - Component palette with pre-built elements (containers, text, buttons, images, forms, etc.)
 - Real-time preview with editable properties
 - Nested component support
 
 ### 📤 Code Export
+
 - Export clean React/Next.js code
 - HTML export support
 - Download generated code as files
 - Syntax-highlighted code preview
 
 ### 📄 Multi-Page Support
+
 - Create and manage multiple pages per project
 - Page metadata configuration
 - Navigation between pages
 - Project organization system
 
 ### 🤖 AI Integration
+
 - AI-powered component generation
 - Content creation assistance
 - Layout suggestions
 - Code improvement recommendations
 
 ### 🔌 API Generator
+
 - REST API endpoint generation
 - GraphQL schema support
 - Next.js API route templates
 - CRUD operations scaffolding
 
 ### 🌐 Domain Management
+
 - Custom domain connection
 - DNS record configuration
 - SSL certificate support
 - Domain verification
 
 ### 📊 Analytics Dashboard
+
 - Page view tracking
 - Visitor analytics
 - Session duration metrics
@@ -90,7 +96,7 @@ The application follows React best practices and modern patterns:
 
 ## Project Structure
 
-```
+````
 frontend-builder/
 ├── app/                      # Next.js app directory
 │   ├── analytics/           # Analytics dashboard page
@@ -140,7 +146,7 @@ frontend-builder/
 git clone https://github.com/AI-WONDER-LABs/Ai-bilder.git
 cd Ai-bilder
 npm install
-```
+````
 
 ### Running Locally
 
@@ -166,29 +172,34 @@ docker run -p 3000:3000 ai-bilder
 
 ## Contributing
 
-See [CONTRIBUTING.md](docs/contributing.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Using GitHub Copilot?** This repository includes comprehensive [Copilot instructions](.github/copilot-instructions.md) to help you get the most out of AI-assisted development.
 
 ## License
 
 [MIT](LICENSE)
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/AI-WONDER-LABs/frontend-builder.git
 cd frontend-builder
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -213,7 +224,7 @@ npm run lint
 ### Creating a Project
 
 1. Navigate to the Dashboard
-2. Click "New Project" 
+2. Click "New Project"
 3. Enter project name and description
 4. Start building in the Builder interface
 
@@ -266,4 +277,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Built with [Next.js](https://nextjs.org/)
 - Styled with [Tailwind CSS](https://tailwindcss.com/)
 - Icons from [React Icons](https://react-icons.github.io/react-icons/)
-        frontend/main
+  frontend/main
