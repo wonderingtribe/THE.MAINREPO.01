@@ -29,7 +29,7 @@
       menu.className = 'toc-menu'
       sidebar.appendChild(menu)
     }
-    menu.innerHTML = '' // No title, no placeholder, just empty
+    menu.textContent = '' // No title, no placeholder, just empty
     return
   }
 

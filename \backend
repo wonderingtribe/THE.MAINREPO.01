@@ -1,0 +1,20 @@
+// Express API server with health check endpoint
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+
+require('dotenv').config();
+
+const app = express();
+app.use(helmet()); // Security headers
+app.use(cors());   // CORS policy
+app.use(express.json()); // Parse JSON
+
+// Basic health check for Docker
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
+// Placeholder: secure authentication and validation (to be added)
+
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));

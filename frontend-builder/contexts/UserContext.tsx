@@ -1,14 +1,18 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types';
+import * as authService from '@/services/authService';
+import * as tokenStorage from '@/utils/tokenStorage';
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  register: (email: string, password: string, name: string) => Promise<void>;
   isAuthenticated: boolean;
+  accessToken: string | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -27,27 +31,92 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const login = async (email: string, _password: string) => {
-    // Mock implementation: password parameter accepted for interface compliance
-    // In production, this would validate credentials against an authentication API
-    const mockUser: User = {
-      id: '1',
-      email,
-      name: email.split('@')[0],
-      subscription: 'free',
+  // Load user from token on mount
+  useEffect(() => {
+    const loadUser = async () => {
+      const token = tokenStorage.getAccessToken();
+      if (token) {
+        try {
+          const response = await authService.getProfile(token);
+          if (response.success && response.data) {
+            const userData = response.data.user;
+            setUser({
+              id: userData.id,
+              email: userData.email,
+              name: userData.name,
+              subscription: userData.subscription?.plan as 'free' | 'pro' | 'enterprise',
+            });
+            setAccessToken(token);
+          }
+        } catch (error) {
+          // Token is invalid, clear it
+          tokenStorage.clearTokens();
+        }
+      }
     };
-    setUser(mockUser);
+    loadUser();
+  }, []);
+
+  const register = async (email: string, password: string, name: string) => {
+    try {
+      const response = await authService.register({ email, password, name });
+      if (response.success && response.data) {
+        const { user: userData, tokens } = response.data;
+        
+        // Store tokens
+        tokenStorage.setAccessToken(tokens.accessToken);
+        tokenStorage.setRefreshToken(tokens.refreshToken);
+        
+        // Update state
+        setUser({
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          subscription: 'free',
+        });
+        setAccessToken(tokens.accessToken);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await authService.login({ email, password });
+      if (response.success && response.data) {
+        const { user: userData, tokens } = response.data;
+        
+        // Store tokens
+        tokenStorage.setAccessToken(tokens.accessToken);
+        tokenStorage.setRefreshToken(tokens.refreshToken);
+        
+        // Update state
+        setUser({
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          subscription: 'free',
+        });
+        setAccessToken(tokens.accessToken);
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {
+    tokenStorage.clearTokens();
     setUser(null);
+    setAccessToken(null);
   };
 
   const isAuthenticated = user !== null;
 
   return (
-    <UserContext.Provider value={{ user, setUser, login, logout, isAuthenticated }}>
+    <UserContext.Provider value={{ user, setUser, login, logout, register, isAuthenticated, accessToken }}>
       {children}
     </UserContext.Provider>
   );

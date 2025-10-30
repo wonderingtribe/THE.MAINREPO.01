@@ -18,7 +18,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "migrate": "echo 'Database migrations coming soon'"
+    "migrate": "node scripts/migrate.js",
+    "migrate:postgres": "node scripts/migrate.js"
   },
   "keywords": [
     "ai",

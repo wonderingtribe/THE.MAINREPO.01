@@ -4,6 +4,64 @@
   // Initialize search functionality when DOM is loaded
   document.addEventListener('DOMContentLoaded', setupSearch)
 
+  // Helper function to sanitize HTML and only allow specific highlight tags
+  function sanitizeHighlightedText (highlightedValue) {
+    // Input validation
+    if (!highlightedValue || typeof highlightedValue !== 'string') {
+      return ''
+    }
+    
+    // Use DOMParser for more robust HTML parsing
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(highlightedValue, 'text/html')
+    
+    // Walk through all nodes and only keep text and allowed strong elements
+    function sanitizeNode (node) {
+      const allowedTagName = 'STRONG'
+      const allowedClass = 'font-bold'
+      
+      if (node.nodeType === Node.TEXT_NODE) {
+        return document.createTextNode(node.textContent)
+      }
+      
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        // Only allow <strong> elements with the exact class we expect
+        if (node.tagName === allowedTagName && 
+            node.className === allowedClass &&
+            node.attributes.length === 1) { // Only has class attribute
+          const strong = document.createElement('strong')
+          strong.className = allowedClass
+          Array.from(node.childNodes).forEach(child => {
+            const sanitizedChild = sanitizeNode(child)
+            if (sanitizedChild) strong.appendChild(sanitizedChild)
+          })
+          return strong
+        }
+        
+        // For any other element, just extract and sanitize its text content
+        const fragment = document.createDocumentFragment()
+        Array.from(node.childNodes).forEach(child => {
+          const sanitizedChild = sanitizeNode(child)
+          if (sanitizedChild) fragment.appendChild(sanitizedChild)
+        })
+        return fragment
+      }
+      
+      return null
+    }
+    
+    const sanitizedFragment = document.createDocumentFragment()
+    Array.from(doc.body.childNodes).forEach(child => {
+      const sanitizedChild = sanitizeNode(child)
+      if (sanitizedChild) sanitizedFragment.appendChild(sanitizedChild)
+    })
+    
+    // Convert back to HTML string
+    const container = document.createElement('div')
+    container.appendChild(sanitizedFragment)
+    return container.innerHTML
+  }
+
   // Configuration constants
   let PAGINATION_MAX_VISIBLE_PAGES = 5
   const SEARCH_DEBOUNCE_MS = 300
@@ -203,7 +261,7 @@
       }
 
       // Update desktop paths list
-      elements.pathsList.innerHTML = ''
+      elements.pathsList.textContent = ''
       updatePathsListForContainer(
         elements.pathsList,
         elements.resultPathTemplateElement,
@@ -213,7 +271,7 @@
 
       // Update mobile paths list if it exists
       if (elements.mobilePathsList) {
-        elements.mobilePathsList.innerHTML = ''
+        elements.mobilePathsList.textContent = ''
         updatePathsListForContainer(
           elements.mobilePathsList,
           elements.mobileResultPathTemplateElement || elements.resultPathTemplateElement,
@@ -323,7 +381,7 @@
     }
 
     function updateResultsForContainer (container, templateElement, results) {
-      container.innerHTML = ''
+      container.textContent = ''
 
       if (!results || results.length === 0) {
         const noResultsElement = document.createElement('p')
@@ -337,13 +395,15 @@
         const titleElement = resultElement.querySelector('h3')
         const contentElement = resultElement.querySelector('p')
 
-        titleElement.innerHTML = hit._highlightResult.title.value
+        titleElement.innerHTML = sanitizeHighlightedText(hit._highlightResult.title.value)
 
         // Cap content to approximately 2 lines (~200 characters)
         const contentText = hit._highlightResult.content.value
-        contentElement.innerHTML = contentText.length > 300
-          ? contentText.substring(0, 200).replace(/\s+\S*$/, '') + '...'
-          : contentText
+        contentElement.innerHTML = sanitizeHighlightedText(
+          contentText.length > 300
+            ? contentText.substring(0, 200).replace(/\s+\S*$/, '') + '...'
+            : contentText
+        )
 
         resultElement.href = hit.url
         container.appendChild(resultElement)
@@ -380,7 +440,7 @@
       }
 
       paginationParent.classList.remove('hidden')
-      paginationContainer.innerHTML = ''
+      paginationContainer.textContent = ''
 
       const currentPage = paginationData.page
       const totalPages = paginationData.totalPages

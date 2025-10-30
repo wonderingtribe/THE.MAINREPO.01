@@ -8,6 +8,7 @@ const router = express.Router();
 
 const authRoutes = require('./auth');
 const projectRoutes = require('./projects');
+const hybridProjectRoutes = require('./hybridProjects');
 
 // API health check
 router.get('/health', (req, res) => {
@@ -20,6 +21,7 @@ router.get('/health', (req, res) => {
 
 // Mount routes
 router.use('/auth', authRoutes);
-router.use('/projects', projectRoutes);
+router.use('/projects', projectRoutes); // Original MongoDB-only routes
+router.use('/hybrid-projects', hybridProjectRoutes); // New hybrid routes (PostgreSQL + MongoDB)
 
 module.exports = router;

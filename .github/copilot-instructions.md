@@ -7,6 +7,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 ## Preferred Technologies
 
 ### Backend
+
 - Node.js/Express for REST API
 - MongoDB (via Mongoose) and PostgreSQL (via Sequelize) for data storage
 - Redis for caching
@@ -14,6 +15,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 - Docker for containerization
 
 ### Frontend
+
 - React 19 (with functional components and hooks)
 - Next.js 16 (for SSR/SSG)
 - Tailwind CSS for styling
@@ -101,6 +103,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 ## Project Structure
 
 ### Backend Structure
+
 - `src/api/`: API controllers, routes, and middleware
 - `src/auth/`: Authentication and authorization logic
 - `src/config/`: Configuration management
@@ -108,6 +111,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 - `src/models/`: Data models (User, Project, etc.)
 
 ### Frontend Structure
+
 - `src/components/builder/`: Drag-and-drop canvas, sidebar, toolbar
 - `src/components/editor/`: Code editor integration (Monaco, CodeMirror)
 - `src/components/preview/`: Live preview modules
@@ -128,6 +132,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 ## Special Instructions
 
 ### Frontend Features
+
 - For drag-and-drop logic, use react-dnd or @dnd-kit
 - For live code editing, use Monaco Editor or CodeMirror
 - For code export, generate clean HTML/JSX or Next.js code
@@ -136,6 +141,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 - For analytics, integrate Google Analytics or similar tools
 
 ### Backend Features
+
 - Use Express with proper middleware (helmet, cors, rate limiting)
 - Implement JWT-based authentication with refresh tokens
 - Use Joi for input validation
@@ -174,6 +180,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 ## Example Tasks
 
 ### Frontend Tasks
+
 - Suggest code for adding new UI components to the builder
 - Suggest code for implementing multi-page navigation
 - Suggest code for integrating a REST API
@@ -181,6 +188,7 @@ This is a comprehensive AI builder for websites and apps that combines a powerfu
 - Suggest code for adding authentication and user management
 
 ### Backend Tasks
+
 - Suggest code for creating new API endpoints
 - Suggest code for implementing authentication flows
 - Suggest code for database migrations
