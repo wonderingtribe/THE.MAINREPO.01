@@ -1,0 +1,69 @@
+
+// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const helmet = require('helmet');
+const app = express();
+
+app.use(helmet()); // Security headers
+app.use(bodyParser.json());
+
+// Environment variables (use dotenv in production)
+const STABLE_API_KEY = process.env.STABLE_API_KEY || 'your-stable-api-key';
+const STABLE_WEBHOOK_SECRET = process.env.STABLE_WEBHOOK_SECRET || 'your-webhook-secret';
+
+// Mock stable.com SDK/API client (replace with real SDK/client)
+const stableAPI = {
+  async createSubscription({ customerId, planId }) {
+    // Replace with real API call, e.g., axios/fetch
+    // Return a subscription object
+    return { id: 'sub_123', customerId, planId, status: 'active' };
+  },
+  verifyWebhook(req) {
+    // Example: HMAC signature verification
+    const signature = req.headers['x-stable-signature'];
+    const payload = JSON.stringify(req.body);
+    const expected = crypto
+      .createHmac('sha256', STABLE_WEBHOOK_SECRET)
+      .update(payload)
+      .digest('hex');
+    return signature === expected;
+  }
+};
+
+// Subscription endpoint
+app.post('/api/subscribe', async (req, res) => {
+  // Validate input
+  const { customerId, planId } = req.body;
+  if (!customerId || !planId) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+  try {
+    // Create subscription
+    const subscription = await stableAPI.createSubscription({ customerId, planId });
+    // Store subscription in DB here (not shown)
+    res.json({ success: true, subscription });
+  } catch (err) {
+    console.error('Error creating subscription:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// Webhook endpoint
+app.post('/api/webhook', (req, res) => {
+  // Verify webhook signature
+  if (!stableAPI.verifyWebhook(req)) {
+    return res.status(401).json({ error: 'Invalid signature.' });
+  }
+  // Handle webhook event (e.g., update subscription status)
+  const event = req.body;
+  // Process event and update DB here
+  res.sendStatus(200);
+});
+
+// Secure server setup (HTTPS recommended in production)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Subscription backend running on port ${PORT}`);
+});
