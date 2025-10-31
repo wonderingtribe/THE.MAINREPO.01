@@ -3,3 +3,86 @@
 
 This file explains how to add the AI Wonderland multi-platform template to your repo.
 ...
+# How to Add Files to a GitHub Branch (Beginner-Friendly Step-by-Step)
+
+## 1. Open Your Project Folder
+- Use VS Code, Terminal, or your preferred file explorer.
+
+## 2. Switch to Your Branch
+- In the terminal, enter (replace with your branch name):
+  ```bash
+  git checkout add-ai-wonderland-template
+  ```
+  *If you haven’t created the branch yet:*
+  ```bash
+  git checkout -b add-ai-wonderland-template
+  ```
+
+## 3. Add Your Files
+- Create new files or copy them into the correct folders:
+  - Example for a Next.js project:
+    ```
+    src/pages/workspace.jsx
+    src/pages/api/purchase.js
+    src/pages/api/upload.js
+    src/pages/sponsors.jsx
+    public/backgrounds/your-bg.png
+    README.md
+    SECURITY.md
+    .env.local.sample
+    ```
+- Edit files as needed (do **not** put secrets or credentials in code).
+
+## 4. Stage Your Changes
+- Stage all files:
+  ```bash
+  git add .
+  ```
+- Or, to stage specific files:
+  ```bash
+  git add src/pages/workspace.jsx README.md
+  ```
+
+## 5. Commit Your Changes
+- Use a clear, descriptive message:
+  ```bash
+  git commit -m "Add AI Wonderland template files and documentation"
+  ```
+
+## 6. Push Your Branch to GitHub
+- Upload your branch and changes:
+  ```bash
+  git push origin add-ai-wonderland-template
+  ```
+
+## 7. Double-Check Coding and Security
+- **No secrets or credentials** (like API keys) in any file or commit.
+- **Use `.env.local.sample`** for placeholder environment variables only.
+- **Update `.gitignore`** so sensitive files (like `.env.local`, `node_modules/`, `.next/`) are never committed.
+- Run:
+  ```bash
+  npm audit
+  ```
+  to check for vulnerabilities.
+
+## 8. Open a Pull Request (PR) on GitHub
+- Go to your repo’s GitHub page.
+- Click the branch dropdown, switch to your branch.
+- Click “Compare & pull request.”
+- Review your changes, request reviews, and merge after approval.
+
+---
+
+## Summary Checklist
+- [ ] On correct branch
+- [ ] Files added/updated
+- [ ] No secrets or credentials in code
+- [ ] `.env.local.sample` included (NOT `.env.local`)
+- [ ] `.gitignore` excludes sensitive files
+- [ ] Ran `npm audit`
+- [ ] Committed and pushed changes
+- [ ] Pull request opened for review
+
+---
+
+**You’re done! Your changes are safe, secure, and ready for review. 🎉**
