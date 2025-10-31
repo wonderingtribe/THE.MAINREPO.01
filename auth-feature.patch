@@ -1,0 +1,234 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: "automation" <automation@example.com>
+Date: Fri, 31 Oct 2025 15:21:49 +0000
+Subject: [PATCH] Add auth register/verify, auth helpers, protected projects route, and tests
+
+---
+ lib/auth.ts                                     |  39 +++++++++++++++++++++++++++++
+ app/api/auth/register/route.ts                   | 165 +++++++++++++++++++++++++++++++++++++++++++++
+ app/api/auth/verify/route.ts                     | 105 ++++++++++++++++++++++++++++++
+ app/api/projects/route.ts                        |  61 +++++++++++++++
+ app/api/auth/[...nextauth]/route.ts              |  78 ++++++++++++++++++
+ __tests__/auth/authorize.test.ts                 |  51 ++++++++++
+ __tests__/auth/session.test.ts                   |  28 ++++++
+ .env.example                                     |  10 +++
+ 8 files changed, 537 insertions(+)
+ create mode 100644 lib/auth.ts
+ create mode 100644 app/api/auth/register/route.ts
+ create mode 100644 app/api/auth/verify/route.ts
+ create mode 100644 app/api/projects/route.ts
+ create mode 100644 app/api/auth/[...nextauth]/route.ts
+ create mode 100644 __tests__/auth/authorize.test.ts
+ create mode 100644 __tests__/auth/session.test.ts
+ create mode 100644 .env.example
+---
+diff --git a/lib/auth.ts b/lib/auth.ts
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/lib/auth.ts
+@@ -0,0 +1,39 @@
++// lib/auth.ts
++// Helpers for NextAuth Credentials authorize flow and session/jwt callbacks.
++// These are extracted so unit tests can exercise them.
++
++import prisma from '@/lib/prisma';
++import bcrypt from 'bcryptjs';
++
++export type AuthUser = {
++  id: string;
++  name?: string | null;
++  email: string;
++  role?: string;
++};
++
++export async function authorizeCredentials(email: string, password: string): Promise<AuthUser | null> {
++  if (!email || !password) return null;
++  const normalized = email.toLowerCase();
++
++  const user = await prisma.user.findUnique({ where: { email: normalized } });
++  if (!user || !user.passwordHash) return null;
++
++  const valid = await bcrypt.compare(password, user.passwordHash);
++  if (!valid) return null;
++
++  return {
++    id: user.id,
++    name: user.name ?? undefined,
++    email: user.email,
++    role: user.role ?? 'user',
++  };
++}
++
++// JWT & session callbacks exported so tests can assert behavior:
++export async function jwtCallback({ token, user }: { token: any; user?: any }) {
++  if (user) {
++    token.id = user.id;
++    token.role = user.role;
++  }
++  return token;
++}
++
++export async function sessionCallback({ session, token }: { session: any; token: any }) {
++  if (token?.id) {
++    session.user = { ...session.user, id: token.id, role: token.role };
++  }
++  return session;
++}
+diff --git a/app/api/auth/register/route.ts b/app/api/auth/register/route.ts
+new file mode 100644
+index 0000000..2222222
+--- /dev/null
++++ b/app/api/auth/register/route.ts
+@@ -0,0 +1,165 @@
++// app/api/auth/register/route.ts
++import { NextResponse } from 'next/server';
++import { z } from 'zod';
++import bcrypt from 'bcryptjs';
++import crypto from 'crypto';
++import prisma from '@/lib/prisma';
++import nodemailer from 'nodemailer';
++
++const RegisterSchema = z.object({
++  email: z.string().email(),
++  password: z.string().min(8),
++  name: z.string().min(1).optional(),
++});
++
++function hashToken(token: string) {
++  return crypto.createHash('sha256').update(token).digest('hex');
++}
++
++async function sendVerificationEmail(to: string, tokenPlain: string) {
++  const transporter = nodemailer.createTransport({
++    host: process.env.SMTP_HOST || 'smtp.example.com',
++    port: Number(process.env.SMTP_PORT || 587),
++    secure: false,
++    auth: {
++      user: process.env.SMTP_USER,
++      pass: process.env.SMTP_PASSWORD,
++    },
++  });
++
++  const verifyUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/verify?email=${encodeURIComponent(
++    to
++  )}&token=${tokenPlain}`;
++
++  await transporter.sendMail({
++    from: process.env.MAIL_FROM || 'no-reply@example.com',
++    to,
++    subject: 'Verify your account',
++    text: `Welcome! Verify your email by visiting: ${verifyUrl}`,
++    html: `<p>Welcome! Verify your email by visiting: <a href="${verifyUrl}">verify account</a></p>`,
++  });
++}
++
++export async function POST(req: Request) {
++  try {
++    const body = await req.json();
++    const parsed = RegisterSchema.safeParse(body);
++    if (!parsed.success) {
++      return NextResponse.json({ error: 'Invalid input', details: parsed.error.format() }, { status: 400 });
++    }
++
++    const { email, password, name } = parsed.data;
++    const normalized = email.toLowerCase();
++
++    const existing = await prisma.user.findUnique({ where: { email: normalized } });
++    if (existing) {
++      return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
++    }
++
++    const passwordHash = await bcrypt.hash(password, 12);
++
++    const user = await prisma.user.create({
++      data: { email: normalized, name: name ?? null, passwordHash, role: 'user' },
++    });
++
++    const tokenPlain = crypto.randomBytes(32).toString('hex');
++    const tokenHash = hashToken(tokenPlain);
++    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24);
++
++    await prisma.verificationToken.create({
++      data: {
++        identifier: normalized,
++        token: tokenHash,
++        expires,
++      },
++    });
++
++    try {
++      await sendVerificationEmail(normalized, tokenPlain);
++    } catch (mailErr) {
++      console.error('sendVerificationEmail failed', mailErr);
++    }
++
++    return NextResponse.json({ ok: true }, { status: 201 });
++  } catch (err) {
++    console.error('register error', err);
++    return NextResponse.json({ error: 'Server error' }, { status: 500 });
++  }
++}
+diff --git a/app/api/auth/verify/route.ts b/app/api/auth/verify/route.ts
+new file mode 100644
+index 0000000..3333333
+--- /dev/null
++++ b/app/api/auth/verify/route.ts
+@@ -0,0 +1,105 @@
++// app/api/auth/verify/route.ts
++import { NextResponse } from 'next/server';
++import crypto from 'crypto';
++import prisma from '@/lib/prisma';
++import { z } from 'zod';
++
++const VerifySchema = z.object({
++  email: z.string().email(),
++  token: z.string().min(8),
++});
++
++function hashToken(token: string) {
++  return crypto.createHash('sha256').update(token).digest('hex');
++}
++
++export async function POST(req: Request) {
++  try {
++    const body = await req.json();
++    const parsed = VerifySchema.safeParse(body);
++    if (!parsed.success) {
++      return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
++    }
++    const { email, token } = parsed.data;
++    const normalized = email.toLowerCase();
++    const tokenHash = hashToken(token);
++
++    const vt = await prisma.verificationToken.findUnique({
++      where: { token: tokenHash },
++    });
++
++    if (!vt || vt.identifier !== normalized) {
++      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 400 });
++    }
++
++    if (vt.expires < new Date()) {
++      await prisma.verificationToken.delete({ where: { token: tokenHash } });
++      return NextResponse.json({ error: 'Token expired' }, { status: 400 });
++    }
++
++    await prisma.user.update({
++      where: { email: normalized },
++      data: { emailVerified: new Date() },
++    });
++
++    await prisma.verificationToken.delete({ where: { token: tokenHash } });
++
++    return NextResponse.json({ ok: true });
++  } catch (err) {
++    console.error('verify error', err);
++    return NextResponse.json({ error: 'Server error' }, { status: 500 });
++  }
++}
+diff --git a/app/api/projects/route.ts b/app/api/projects/route.ts
+new file mode 100644
+index 0000000..4444444
+---*
+
