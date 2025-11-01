@@ -176,6 +176,60 @@ export default function WorkshopPage() {
             </a>
           </div>
         </div>
+
+        {/* Bring Your Own AI API Section */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-md">Bring Your Own AI</h2>
+          <GlassCard className="p-8 bg-gradient-to-br from-cyan-400/20 via-blue-400/20 to-purple-400/20">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-white mb-3">Custom AI Integration</h3>
+                <p className="text-white/90 mb-4">
+                  Connect your own AI provider or API to power your projects. 
+                  We support OpenAI, Anthropic, Google AI, and any custom REST API.
+                </p>
+                <ul className="text-white/80 space-y-2 mb-6">
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-300 rounded-full"></span>
+                    Secure API key storage with encryption
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-300 rounded-full"></span>
+                    Support for custom endpoints and models
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-300 rounded-full"></span>
+                    Real-time testing and validation
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-300 rounded-full"></span>
+                    Usage analytics and monitoring
+                  </li>
+                </ul>
+                <a
+                  href="/ai"
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  <FiPackage className="w-5 h-5" />
+                  Configure Your AI API
+                </a>
+              </div>
+              <div className="w-full md:w-96">
+                <div className="glass-card p-6">
+                  <div className="text-sm font-mono text-white/80 space-y-2">
+                    <div className="text-cyan-300">{'//'} Example API Configuration</div>
+                    <div>{'{'}</div>
+                    <div className="pl-4">&quot;provider&quot;: &quot;openai&quot;,</div>
+                    <div className="pl-4">&quot;model&quot;: &quot;gpt-4&quot;,</div>
+                    <div className="pl-4">&quot;api_key&quot;: &quot;sk-***&quot;,</div>
+                    <div className="pl-4">&quot;endpoint&quot;: &quot;custom-url&quot;</div>
+                    <div>{'}'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
       </div>
     </DashboardLayout>
   );

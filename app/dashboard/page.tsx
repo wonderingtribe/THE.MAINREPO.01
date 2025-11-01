@@ -11,9 +11,17 @@ import { CreateProjectModal } from '@/components/ui/CreateProjectModal';
 export default function DashboardPage() {
   const { projects, createProject } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
 
   const handleCreateProject = (name: string, description: string) => {
     createProject(name, description);
+  };
+
+  const handleAIGenerate = () => {
+    if (aiPrompt.trim()) {
+      // Navigate to AI assistant with the prompt
+      window.location.href = `/ai?prompt=${encodeURIComponent(aiPrompt)}`;
+    }
   };
 
   const stats = [
@@ -45,6 +53,42 @@ export default function DashboardPage() {
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleCreateProject}
         />
+
+        {/* AI Assistant Prompt - Tie-Dye Theme */}
+        <div className="mb-8">
+          <GlassCard className="p-8 tie-dye-gradient border-2 border-white/30">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
+                <FiCpu className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-3 drop-shadow-lg">
+                What can I build for you? ✨
+              </h2>
+              <p className="text-white/90 text-lg mb-6">
+                Let AI help you create amazing components and features
+              </p>
+              <div className="max-w-2xl mx-auto">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAIGenerate()}
+                    placeholder="Try: 'Create a pricing table with 3 tiers'"
+                    className="w-full px-6 py-4 bg-white/10 border-2 border-white/30 rounded-full text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
+                  />
+                  <button
+                    onClick={handleAIGenerate}
+                    className="btn-primary mt-4 inline-flex items-center gap-2"
+                  >
+                    <FiZap className="w-5 h-5" />
+                    Generate with AI
+                  </button>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
