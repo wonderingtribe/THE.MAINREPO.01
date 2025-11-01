@@ -141,7 +141,7 @@ export default function AgentTemplatesPage() {
                 )}
 
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-12 h-12 rounded-full ${colorClasses[template.color]} flex items-center justify-center`}>
+                  <div className={`w-12 h-12 rounded-full ${colorClasses[template.color as keyof typeof colorClasses]} flex items-center justify-center`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
