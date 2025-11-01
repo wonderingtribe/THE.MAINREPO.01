@@ -1,19 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Header } from '@/components/ui/Header';
+import { CreateProjectModal } from '@/components/ui/CreateProjectModal';
 import Link from 'next/link';
 import { FiPlus, FiFolder, FiClock } from 'react-icons/fi';
 
 export default function DashboardPage() {
   const { projects, createProject } = useApp();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleCreateProject = () => {
-    const name = prompt('Enter project name:');
-    if (name) {
-      createProject(name, 'A new website project');
-    }
+  const handleCreateProject = (name: string, description: string) => {
+    createProject(name, description);
   };
 
   return (
@@ -24,12 +23,18 @@ export default function DashboardPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Projects</h1>
           <button
-            onClick={handleCreateProject}
+            onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             <FiPlus /> New Project
           </button>
         </div>
+
+        <CreateProjectModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreateProject}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Quick Start Card */}
@@ -79,7 +84,7 @@ export default function DashboardPage() {
             <h3 className="text-xl font-semibold mb-2">No projects yet</h3>
             <p className="text-gray-600 mb-6">Create your first project to get started</p>
             <button
-              onClick={handleCreateProject}
+              onClick={() => setIsModalOpen(true)}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               Create Project
