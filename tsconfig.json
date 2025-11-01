@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "frontend-builder", "wonderingtribe-frontend-builder"]
+  "exclude": ["node_modules", "frontend-builder", "wonderingtribe-frontend-builder", "AI-WONDERLAND-INNOVATION-", "docs"]
 }

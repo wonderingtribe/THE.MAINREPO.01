@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { FiCode, FiLayout, FiZap, FiGlobe, FiBarChart, FiCpu } from "react-icons/fi";
+import { FiCode, FiLayout, FiZap, FiGlobe, FiBarChart, FiCpu, FiArrowRight } from "react-icons/fi";
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { GlassCard } from "@/components/dashboard/GlassCard";
 
 export default function Home() {
   const features = [
@@ -36,29 +38,31 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section */}
-      <div className="container mx-auto px-6 py-16">
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto">
+        {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Build Beautiful Websites
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+            Welcome to
             <br />
-            <span className="text-blue-600">Without Code</span>
+            <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
+              AI-WONDERLAND
+            </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto drop-shadow-md">
             A powerful React/Next.js SaaS website and app builder with drag-and-drop UI,
             code export, AI integration, and more.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/builder"
-              className="px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="btn-primary inline-flex items-center gap-2 justify-center"
             >
-              Start Building
+              Start Building <FiArrowRight />
             </Link>
             <Link
               href="/dashboard"
-              className="px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold border-2 border-blue-600 hover:bg-blue-50 transition-colors"
+              className="btn-secondary inline-flex items-center gap-2 justify-center"
             >
               View Dashboard
             </Link>
@@ -66,34 +70,32 @@ export default function Home() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="text-blue-600 mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
+            <GlassCard key={index} className="p-6">
+              <div className="icon-container text-white mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+              <p className="text-white/80">{feature.description}</p>
+            </GlassCard>
           ))}
         </div>
 
         {/* CTA Section */}
-        <div className="mt-16 bg-blue-600 rounded-2xl p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 text-blue-100">
+        <div className="mt-16 glass-card p-8 md:p-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Ready to Get Started?</h2>
+          <p className="text-xl mb-8 text-white/90">
             Join thousands of developers building amazing websites
           </p>
           <Link
             href="/builder"
-            className="inline-block px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            className="btn-primary inline-flex items-center gap-2"
           >
-            Launch Builder
+            Launch Builder <FiArrowRight />
           </Link>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
-
