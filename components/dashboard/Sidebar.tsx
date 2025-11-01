@@ -10,7 +10,8 @@ import {
   FiBarChart, 
   FiSettings,
   FiHelpCircle,
-  FiCpu
+  FiCpu,
+  FiShoppingBag
 } from 'react-icons/fi';
 
 export const Sidebar: React.FC = () => {
@@ -21,6 +22,7 @@ export const Sidebar: React.FC = () => {
     { icon: FiLayout, label: 'Builder', href: '/builder' },
     { icon: FiFolder, label: 'Projects', href: '/projects' },
     { icon: FiCpu, label: 'AI Assistant', href: '/ai' },
+    { icon: FiShoppingBag, label: 'Workshop', href: '/workshop' },
     { icon: FiBarChart, label: 'Analytics', href: '/analytics' },
     { icon: FiSettings, label: 'Settings', href: '/settings' },
     { icon: FiHelpCircle, label: 'Help', href: '/help' },

@@ -36,6 +36,12 @@ export const TopNavigation: React.FC = () => {
                 Projects
               </Link>
               <Link 
+                href="/workshop" 
+                className="nav-link"
+              >
+                Workshop
+              </Link>
+              <Link 
                 href="/analytics" 
                 className="nav-link"
               >

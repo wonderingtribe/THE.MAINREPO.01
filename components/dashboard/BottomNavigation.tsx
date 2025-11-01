@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiHome, FiLayout, FiFolder, FiBarChart } from 'react-icons/fi';
+import { FiHome, FiLayout, FiFolder, FiBarChart, FiShoppingBag } from 'react-icons/fi';
 
 export const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export const BottomNavigation: React.FC = () => {
   const navItems = [
     { icon: FiHome, label: 'Home', href: '/' },
     { icon: FiLayout, label: 'Builder', href: '/builder' },
-    { icon: FiFolder, label: 'Projects', href: '/projects' },
+    { icon: FiShoppingBag, label: 'Workshop', href: '/workshop' },
     { icon: FiBarChart, label: 'Analytics', href: '/analytics' },
   ];
 
