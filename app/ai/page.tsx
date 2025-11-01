@@ -8,11 +8,12 @@ import { GlassCard } from '@/components/dashboard/GlassCard';
 type AIProvider = 'microsoft' | 'chatgpt4' | 'chatgpt4.5' | 'grok' | 'custom';
 type UserTier = 'free' | 'pro';
 
-export default function AIAssistantPage() {
+export default function MicrosoftAIPage() {
   const [selectedProvider, setSelectedProvider] = useState<AIProvider>('microsoft');
   const [userTier] = useState<UserTier>('free'); // This would come from user context
   const [prompt, setPrompt] = useState('');
   const [customApiKey, setCustomApiKey] = useState('');
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
 
   const aiProviders = [
     { 
@@ -76,22 +77,71 @@ export default function AIAssistantPage() {
           <GlassCard className="p-8 tie-dye-gradient border-2 border-white/30">
             <div className="text-center">
               <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
-                AI Assistant
+                Microsoft AI Assistant
               </h1>
               <p className="text-white/90 text-xl mb-6">
                 What can I build for you today? ✨
               </p>
               
-              {/* Main AI Prompt */}
+              {/* Main AI Prompt with Model Selector */}
               <div className="max-w-3xl mx-auto">
                 <div className="relative">
                   <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Describe what you want to build... (e.g., 'Create a contact form with validation')"
-                    className="w-full px-6 py-4 bg-white/10 border-2 border-white/30 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 resize-none"
+                    className="w-full px-6 py-4 bg-white/10 border-2 border-white/30 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 resize-none pr-32"
                     rows={4}
                   />
+                  
+                  {/* AI Model Selector Dropdown - Small, positioned in textarea */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowModelDropdown(!showModelDropdown)}
+                        className="px-3 py-1.5 text-xs bg-white/20 hover:bg-white/30 border border-white/40 rounded-lg text-white font-medium flex items-center gap-2 transition-all"
+                      >
+                        <FiCpu className="w-3 h-3" />
+                        {aiProviders.find(p => p.id === selectedProvider)?.name}
+                        <span className="text-white/70">▼</span>
+                      </button>
+                      
+                      {showModelDropdown && (
+                        <div className="absolute top-full right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl border border-white/30 rounded-lg shadow-2xl overflow-hidden z-50">
+                          {aiProviders.map((provider) => (
+                            <button
+                              key={provider.id}
+                              onClick={() => {
+                                if (provider.isPremium && userTier === 'free') {
+                                  alert('This AI provider requires a Pro subscription. Upgrade to access premium features!');
+                                } else {
+                                  setSelectedProvider(provider.id);
+                                  setShowModelDropdown(false);
+                                }
+                              }}
+                              className={`w-full px-4 py-2.5 text-left hover:bg-purple-100 transition-colors flex items-center justify-between gap-2 ${
+                                selectedProvider === provider.id ? 'bg-purple-50' : ''
+                              } ${provider.isPremium && userTier === 'free' ? 'opacity-60' : ''}`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{provider.icon}</span>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                                    {provider.name}
+                                    {provider.isPremium && userTier === 'free' && (
+                                      <FiLock className="w-3 h-3 text-gray-500" />
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-gray-600">{provider.description}</div>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
                   <button
                     onClick={handleGenerate}
                     className="btn-primary mt-4 inline-flex items-center gap-2 text-lg"

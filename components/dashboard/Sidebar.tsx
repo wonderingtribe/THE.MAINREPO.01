@@ -11,7 +11,8 @@ import {
   FiSettings,
   FiHelpCircle,
   FiCpu,
-  FiShoppingBag
+  FiShoppingBag,
+  FiDollarSign
 } from 'react-icons/fi';
 
 export const Sidebar: React.FC = () => {
@@ -21,9 +22,10 @@ export const Sidebar: React.FC = () => {
     { icon: FiHome, label: 'Dashboard', href: '/dashboard' },
     { icon: FiLayout, label: 'Builder', href: '/builder' },
     { icon: FiFolder, label: 'Projects', href: '/projects' },
-    { icon: FiCpu, label: 'AI Assistant', href: '/ai' },
+    { icon: FiCpu, label: 'Microsoft AI', href: '/ai' },
     { icon: FiShoppingBag, label: 'Workshop', href: '/workshop' },
     { icon: FiBarChart, label: 'Analytics', href: '/analytics' },
+    { icon: FiDollarSign, label: 'Pricing', href: '/pricing' },
     { icon: FiSettings, label: 'Settings', href: '/settings' },
     { icon: FiHelpCircle, label: 'Help', href: '/help' },
   ];
