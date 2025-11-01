@@ -220,7 +220,11 @@ body {
   background: rgba(255, 255, 255, 0.5);
 }
 
+        copilot/implement-dashboard-ui
 /* Enhanced Vibrant Tie-Dye Gradient Animation */
+
+/* Tie-Dye Gradient Animation */ 
+         main
 @keyframes tiedye {
   0%, 100% {
     background-position: 0% 50%;
@@ -239,6 +243,7 @@ body {
 .tie-dye-gradient {
   background: linear-gradient(
     45deg,
+        copilot/implement-dashboard-ui
     #FF1493,
     #FF69B4,
     #FF00FF,
@@ -249,10 +254,20 @@ body {
     #7FFF00,
     #FFD700,
     #FF8C00
+
+    #667eea,
+    #764ba2,
+    #f093fb,
+    #4facfe,
+    #00f2fe,
+    #43e97b,
+    #fa709a
+        main
   );
   background-size: 400% 400%;
   animation: tiedye 10s ease infinite;
 }
+        copilot/implement-dashboard-ui
 
 /* Alice in Wonderland Background Variations */
 .wonderland-bg-purple {
@@ -483,23 +498,43 @@ body {
 }
 
 /* Wonderland Sparkle Effect */
+
 @keyframes sparkle {
+
   0%, 100% {
+
     opacity: 0;
+
     transform: scale(0);
+
   }
+
   50% {
+
     opacity: 1;
+
     transform: scale(1);
+
   }
+
 }
 
 .sparkle {
+
   position: absolute;
+
   width: 4px;
+
   height: 4px;
+
   background: radial-gradient(circle, #FFD700, transparent);
+
   border-radius: 50%;
+
   animation: sparkle 2s ease-in-out infinite;
+
   pointer-events: none;
+
 }
+
+        main

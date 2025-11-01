@@ -188,7 +188,7 @@ import * as projectService from '@/services/projectService';
 // Login
 const loginResult = await authService.login({
   email: 'user@example.com',
-  password: 'password123'
+  password: '<YOUR_SECURE_PASSWORD>'
 });
 
 if (loginResult.success) {
@@ -217,7 +217,7 @@ Content-Type: application/json
 
 {
   "email": "user@example.com",
-  "password": "SecurePassword123",
+  "password": "<YOUR_SECURE_PASSWORD>",
   "name": "John Doe"
 }
 ```
@@ -249,7 +249,7 @@ Content-Type: application/json
 
 {
   "email": "user@example.com",
-  "password": "SecurePassword123"
+  "password": "<YOUR_SECURE_PASSWORD>"
 }
 ```
 
