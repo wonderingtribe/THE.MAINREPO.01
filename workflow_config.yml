@@ -4,5 +4,3 @@ RELEASE="enabled"
 RETENTION_DAYS="1"
 TESTING="disabled"
 SONAR="disabled"
-# Configure artifact upload to not fail on missing files
-ARTIFACT_IF_NO_FILES_FOUND="ignore"
