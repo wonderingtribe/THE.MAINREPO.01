@@ -9,6 +9,7 @@ AI-Bilder is a cross-platform no-code builder that lets users create websites an
 ## Features
 
 - Drag-and-drop builder for websites and mobile apps
+- **Image to Code**: Upload UI screenshots and convert them to code with AI
 - Multiple AI integrations (text, image, code, etc.)
 - API key management
 - Custom domain provisioning
@@ -42,6 +43,14 @@ A powerful React/Next.js SaaS website and app builder with drag-and-drop UI, cod
 - Page metadata configuration
 - Navigation between pages
 - Project organization system
+
+### 🖼️ Image to Code
+
+- Upload screenshots or UI mockups
+- AI-powered code generation from images
+- Support for OpenAI GPT-4 Vision and Claude Sonnet
+- Instant conversion to HTML/CSS/React components
+- Direct integration into builder workspace
 
 ### 🤖 AI Integration
 
