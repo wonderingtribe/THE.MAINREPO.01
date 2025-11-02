@@ -30,7 +30,6 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-        copilot/implement-dashboard-ui
   "exclude": [
     "node_modules",
     "frontend-builder",
@@ -38,7 +37,4 @@
     "AI-WONDERLAND-INNOVATION-",
     "docs"
   ]
-
-  "exclude": ["node_modules", "frontend-builder", "wonderingtribe-frontend-builder", "AI-WONDERLAND-INNOVATION-", "docs"]
-        main
 }
