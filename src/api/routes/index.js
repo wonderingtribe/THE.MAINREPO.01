@@ -9,6 +9,7 @@ const router = express.Router();
 const authRoutes = require('./auth');
 const projectRoutes = require('./projects');
 const hybridProjectRoutes = require('./hybridProjects');
+const imageToCodeRoutes = require('./imageToCode');
 
 // API health check
 router.get('/health', (req, res) => {
@@ -23,5 +24,6 @@ router.get('/health', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/projects', projectRoutes); // Original MongoDB-only routes
 router.use('/hybrid-projects', hybridProjectRoutes); // New hybrid routes (PostgreSQL + MongoDB)
+router.use('/v1/image-to-code', imageToCodeRoutes); // Image to code conversion
 
 module.exports = router;

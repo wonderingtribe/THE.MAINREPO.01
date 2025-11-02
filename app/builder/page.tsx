@@ -7,7 +7,8 @@ import { ComponentPalette } from '@/components/builder/ComponentPalette';
 import { Canvas } from '@/components/builder/Canvas';
 import { PropertiesPanel } from '@/components/builder/PropertiesPanel';
 import { CodeExportModal } from '@/components/builder/CodeExportModal';
-import { FiSave, FiCode, FiEye, FiEyeOff } from 'react-icons/fi';
+import { ImportFromImage } from '@/components/builder/ImportFromImage';
+import { FiSave, FiCode, FiEye, FiEyeOff, FiImage } from 'react-icons/fi';
 import { ComponentType } from '@/types';
 
 let componentCounter = 0;
@@ -51,6 +52,7 @@ export default function BuilderPage() {
   const { currentPage, setCurrentPage, addComponent, previewMode, setPreviewMode } = useBuilder();
   const { currentProject, createProject } = useApp();
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     // Initialize with a default project if none exists
@@ -77,6 +79,22 @@ export default function BuilderPage() {
     addComponent(newComponent);
   }, [addComponent]);
 
+  const handleCodeGenerated = useCallback((code: string) => {
+    // Parse the generated code and add it as a custom component
+    // For now, we'll add it as a container with the code as raw HTML
+    componentCounter += 1;
+    const newComponent = {
+      id: `component-${componentCounter}`,
+      type: 'container' as ComponentType,
+      props: { 
+        dangerouslySetInnerHTML: { __html: code },
+        'data-generated': 'true'
+      },
+      styles: { padding: '20px', minHeight: '100px' },
+    };
+    addComponent(newComponent);
+  }, [addComponent]);
+
   return (
     <div className="h-screen flex flex-col">
       {/* Top Toolbar */}
@@ -91,6 +109,12 @@ export default function BuilderPage() {
           </span>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowImportModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 rounded hover:bg-purple-700"
+          >
+            <FiImage /> Import from Image
+          </button>
           <button
             onClick={() => setPreviewMode(!previewMode)}
             className="flex items-center gap-2 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
@@ -119,6 +143,14 @@ export default function BuilderPage() {
 
       {/* Code Export Modal */}
       <CodeExportModal isOpen={showExportModal} onClose={() => setShowExportModal(false)} />
+      
+      {/* Import from Image Modal */}
+      {showImportModal && (
+        <ImportFromImage
+          onCodeGenerated={handleCodeGenerated}
+          onClose={() => setShowImportModal(false)}
+        />
+      )}
     </div>
   );
 }
