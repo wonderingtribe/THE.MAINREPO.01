@@ -3,8 +3,6 @@
 import React, { useState } from 'react';
 
 interface ExportOptionsProps {
-  code: string;
-  framework: string;
   onExport: (options: ExportConfig) => void;
 }
 
@@ -15,7 +13,7 @@ interface ExportConfig {
   projectName: string;
 }
 
-export default function ExportOptions({ code, framework, onExport }: ExportOptionsProps) {
+export default function ExportOptions({ onExport }: ExportOptionsProps) {
   const [projectName, setProjectName] = useState('my-project');
   const [includePackageJson, setIncludePackageJson] = useState(true);
   const [includeReadme, setIncludeReadme] = useState(true);

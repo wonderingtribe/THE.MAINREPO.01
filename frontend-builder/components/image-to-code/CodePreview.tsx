@@ -43,8 +43,6 @@ export default function CodePreview({ code, framework, onFrameworkChange }: Code
     }
   };
 
-  const currentFramework = frameworks.find((f) => f.id === framework) || frameworks[0];
-
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       {/* Header */}

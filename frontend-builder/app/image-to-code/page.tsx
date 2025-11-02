@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import ImageUploader from '@/components/image-to-code/ImageUploader';
 import CodePreview from '@/components/image-to-code/CodePreview';
 import ExportOptions from '@/components/image-to-code/ExportOptions';
@@ -15,7 +16,6 @@ export default function ImageToCodePage() {
     error,
     handleImageUpload,
     handleFrameworkChange,
-    handleConvert,
     handleExport,
   } = useImageToCode();
 
@@ -42,11 +42,16 @@ export default function ImageToCodePage() {
             {image && (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold mb-4">Preview</h3>
-                <img
-                  src={image}
-                  alt="Uploaded"
-                  className="w-full rounded-lg border"
-                />
+                <div className="relative w-full" style={{ minHeight: '200px' }}>
+                  <Image
+                    src={image}
+                    alt="Uploaded"
+                    width={800}
+                    height={600}
+                    className="w-full rounded-lg border"
+                    style={{ objectFit: 'contain' }}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -62,8 +67,6 @@ export default function ImageToCodePage() {
                 />
 
                 <ExportOptions
-                  code={code}
-                  framework={framework}
                   onExport={handleExport}
                 />
               </>
