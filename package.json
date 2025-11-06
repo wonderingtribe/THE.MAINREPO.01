@@ -52,7 +52,7 @@
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "express-rate-limit": "^7.2.0",
     "framer-motion": "^12.23.24",
