@@ -1,1 +1,5 @@
 
+GitHubAI/                 ← Root folder (renamed from GitHubAIExample)
+└── SrcCode/              ← Source code folder
+    └── com/github/models/inference/samples/
+        └── BasicGitHubAI.java  ← Your main class with main()
