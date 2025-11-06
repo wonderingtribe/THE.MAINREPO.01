@@ -1,29 +1,25 @@
-import type { Metadata } from "next";
 import "./globals.css";
-import { UserProvider } from "@/contexts/UserContext";
-import { AppProvider } from "@/contexts/AppContext";
-import { BuilderProvider } from "@/contexts/BuilderContext";
+import "./wonderland.css"; // 🪄 Wonderland theme styles
+import { AppContextProvider } from "@/contexts/AppContext";
+import { BuilderContextProvider } from "@/contexts/BuilderContext";
+import { UserContextProvider } from "@/contexts/UserContext";
 
-export const metadata: Metadata = {
-  title: "Frontend Builder - Create Beautiful Websites",
-  description: "A powerful React/Next.js SaaS website and app builder with drag-and-drop UI, code export, and AI integration",
+export const metadata = {
+  title: "Frontend Builder",
+  description: "AI-driven website and SaaS builder platform",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="antialiased font-sans">
-        <UserProvider>
-          <AppProvider>
-            <BuilderProvider>
-              {children}
-            </BuilderProvider>
-          </AppProvider>
-        </UserProvider>
+      <body className="wonderland-bg wonderland-fade-in min-h-screen">
+        <UserContextProvider>
+          <AppContextProvider>
+            <BuilderContextProvider>
+              <div className="wonderland-container p-6">{children}</div>
+            </BuilderContextProvider>
+          </AppContextProvider>
+        </UserContextProvider>
       </body>
     </html>
   );

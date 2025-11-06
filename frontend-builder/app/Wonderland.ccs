@@ -1,0 +1,37 @@
+/* Wonderland theme layout & animation styles */
+
+.wonderland-bg {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  animation: gradientShift 10s ease infinite;
+}
+
+.wonderland-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.wonderland-fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
