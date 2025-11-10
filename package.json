@@ -57,7 +57,7 @@
     "express-rate-limit": "^7.2.0",
     "framer-motion": "^12.23.24",
     "helmet": "^7.1.0",
-    "joi": "^17.13.0",
+    "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "multer": "^2.0.2",
