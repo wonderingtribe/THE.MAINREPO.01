@@ -6,21 +6,59 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 export async function POST(request: NextRequest) {
   try {
     const { message, provider = 'gemini' } = await request.json()
+
     if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Message is required' },
+        { status: 400 }
+      )
     }
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: message }] }] }),
-    })
+
+    const response = await fetch(
+      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: message,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    )
+
     const data = await response.json()
+
     if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to get response from AI', details: data }, { status: 500 })
+      console.error('Gemini API Error:', data)
+      return NextResponse.json(
+        { error: 'Failed to get response from AI', details: data },
+        { status: 500 }
+      )
     }
-    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.'
-    return NextResponse.json({ success: true, message: aiResponse, provider: 'gemini' })
+
+    const aiResponse =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'Sorry, I could not generate a response.'
+
+    return NextResponse.json({
+      success: true,
+      message: aiResponse,
+      provider: 'gemini',
+    })
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error', details: String(error) }, { status: 500 })
+    console.error('API Error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error', details: String(error) },
+      { status: 500 }
+    )
   }
 }
