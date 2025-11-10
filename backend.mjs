@@ -4,7 +4,7 @@ import fetch from "node-fetch"; // or built-in fetch in Node 20+
 const app = express();
 app.use(express.json());
 
-const GEMINI_API_KEY = "YOUR_API_KEY";
+const GEMINI_API_KEY =AIzaSyCG0DkKz0y_PRuYYzfjFqGRwMUmUqEYZNo
 
 app.post("/generate", async (req, res) => {
   const prompt = req.body.prompt;
