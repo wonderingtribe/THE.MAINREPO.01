@@ -8,7 +8,7 @@ export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(true)
   const [messages, setMessages] = useState([
     { id: 1, text: 'Hello! 👋 Welcome to WonderSpace', sender: 'ai', timestamp: new Date() },
-    { id: 2, text: 'I can help you build amazing AI agents and apps!', sender: 'ai', timestamp: new Date() },
+    { id: 2, text: 'I can help you build amazing Websites and apps!', sender: 'ai', timestamp: new Date() },
   ])
   const [inputValue, setInputValue] = useState('')
 
