@@ -60,7 +60,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => setIsChatOpen(true)}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition"
+              className="px-4 py-2 bg-purple-600 hover:bg-red-700 rounded-lg text-sm font-semibold transition"
             >
               Open Chat
             </button>
@@ -71,9 +71,9 @@ export default function Home() {
         {isChatOpen && (
           <div className="p-4 max-w-4xl mx-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-purple-600">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-black-600">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-green-600 flex items-center justify-center shadow-lg">
                   <Sparkles size={24} className="text-white animate-spin" />
                 </div>
                 <div>
@@ -84,13 +84,13 @@ export default function Home() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsChatOpen(false)}
-                  className="p-2 hover:bg-purple-700 rounded-lg transition"
+                  className="p-2 hover:bg-red-700 rounded-lg transition"
                 >
                   <Minimize2 size={18} />
                 </button>
                 <button
                   onClick={() => setIsChatOpen(false)}
-                  className="p-2 hover:bg-purple-700 rounded-lg transition"
+                  className="p-2 hover:bg-red-700 rounded-lg transition"
                 >
                   <X size={18} />
                 </button>
@@ -108,7 +108,7 @@ export default function Home() {
                     className={`max-w-xs px-4 py-2 rounded-lg ${
                       message.sender === 'user'
                         ? 'bg-blue-600 text-white rounded-br-none'
-                        : 'bg-purple-700 text-purple-100 rounded-bl-none'
+                        : 'bg-black-700 text-red-100 rounded-bl-none'
                     }`}
                   >
                     <p className="text-sm">{message.text}</p>
@@ -133,7 +133,7 @@ export default function Home() {
                   if (e.key === 'Enter') handleSendMessage()
                 }}
                 placeholder="Ask me anything about WonderSpace..."
-                className="flex-1 px-4 py-2 bg-purple-800 border border-purple-600 rounded-lg text-sm placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                className="flex-1 px-4 py-2 bg-black-800 border border-purple-600 rounded-lg text-sm placeholder-red-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
               <button
                 onClick={handleSendMessage}
