@@ -7,4 +7,4 @@ anthropic==0.18.0
 pillow==10.3.0
 pydantic==2.12.4
 httpx==0.26.0
-aiofiles==23.2.1
+aiofiles==25.1.0
