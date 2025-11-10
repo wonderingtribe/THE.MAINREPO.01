@@ -105,40 +105,43 @@ The application follows React best practices and modern patterns:
 
 ## Project Structure
 
-```
-frontend-builder/
-├── app/                      # Next.js app directory
-│   ├── analytics/           # Analytics dashboard page
-│   ├── builder/             # Main builder interface
-│   ├── dashboard/           # User dashboard
-│   ├── projects/            # Projects list page
-│   ├── layout.tsx           # Root layout with providers
-│   └── page.tsx             # Home/landing page
+```frontend-builder/
+├── app/                      
+│   ├── analytics/                # Analytics dashboard page
+│   ├── builder/                  # Main builder interface
+│   ├── dashboard/                # User dashboard
+│   ├── projects/                 # Projects list page
+│   ├── api/                      # <-- NEW: API routes
+│   │   └── chat/
+│   │       └── route.ts          # Gemini API backend endpoint
+│   ├── layout.tsx                # Root layout with providers
+│   └── page.tsx                  # Home/landing page (now has AI chat banner)
 ├── components/
-│   ├── analytics/           # Analytics components
-│   ├── builder/             # Builder components
-│   │   ├── Canvas.tsx       # Drag-drop canvas
-│   │   ├── ComponentPalette.tsx  # Component selector
-│   │   ├── PropertiesPanel.tsx   # Property editor
-│   │   └── CodeExportModal.tsx   # Code export UI
-│   └── ui/                  # UI components
-│       └── Header.tsx       # Navigation header
-├── contexts/                # React contexts
-│   ├── AppContext.tsx       # Project management
-│   ├── BuilderContext.tsx   # Builder state
-│   └── UserContext.tsx      # User authentication
-├── hooks/                   # Custom React hooks
-│   ├── useAnalytics.ts      # Analytics hook
-│   ├── useCodeExport.ts     # Code export hook
-│   └── useDragDrop.ts       # Drag-drop hook
-├── services/                # Business logic services
-│   ├── aiService.ts         # AI integration
-│   ├── analyticsService.ts  # Analytics tracking
-│   ├── apiGenerator.ts      # API generation
-│   └── domainService.ts     # Domain management
-└── types/                   # TypeScript definitions
-    └── index.ts             # Type definitions
-```
+│   ├── analytics/                # Analytics components
+│   ├── builder/                  # Builder components
+│   │   ├── Canvas.tsx
+│   │   ├── ComponentPalette.tsx
+│   │   ├── PropertiesPanel.tsx
+│   │   └── CodeExportModal.tsx
+│   └── ui/
+│       └── Header.tsx
+├── contexts/
+│   ├── AppContext.tsx
+│   ├── BuilderContext.tsx
+│   └── UserContext.tsx
+├── hooks/
+│   ├── useAnalytics.ts
+│   ├── useCodeExport.ts
+│   └── useDragDrop.ts
+├── services/
+│   ├── aiService.ts
+│   ├── analyticsService.ts
+│   ├── apiGenerator.ts
+│   └── domainService.ts
+├── types/
+│   └── index.ts
+├── .env.local                    # <-- NEW: Secret keys for Gemini and other APIs (NOT committed)
+└── ...
 
 ## Getting Started
 
