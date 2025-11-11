@@ -17,8 +17,8 @@
   box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   transition: all 0.4s ease;
-  overflow-y: auto;     /* Enables vertical scroll for the container */
-  max-height: 100vh;    /* Prevents it from overflowing the screen */
+  overflow-y: auto;     
+  max-height: 100vh;    
 }
 
 .wonderland-container:hover {
@@ -32,25 +32,24 @@
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Sidebar scroll fix */
 .sidebar {
   overflow-y: auto;
   max-height: 100vh;
+}
+
+/* Prevent text overflow in sidebar links */
+.sidebar a span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
