@@ -4,16 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  FiHome, 
-  FiLayout, 
-  FiFolder, 
-  FiBarChart, 
-  FiSettings,
-  FiHelpCircle,
-  FiCpu,
-  FiShoppingBag,
-  FiDollarSign,
-  FiHeart
+  FiHome, FiLayout, FiFolder, FiBarChart, FiSettings, FiHelpCircle, 
+  FiCpu, FiShoppingBag, FiDollarSign, FiHeart 
 } from 'react-icons/fi';
 
 export const Sidebar: React.FC = () => {
@@ -34,12 +26,11 @@ export const Sidebar: React.FC = () => {
 
   return (
     <aside className="hidden md:block fixed left-0 top-24 bottom-0 w-64 z-40">
-      <div className="glass-nav mx-4 rounded-2xl p-4 h-full">
+      <div className="glass-nav mx-4 rounded-2xl p-4 h-full sidebar">
         <div className="flex flex-col gap-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            
             return (
               <Link
                 key={item.href}
@@ -51,7 +42,7 @@ export const Sidebar: React.FC = () => {
                 }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
+                <span className="font-medium truncate">{item.label}</span>
               </Link>
             );
           })}
