@@ -1,243 +1,106 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, ChevronRight, FileText, Folder, Plus, Save, Play, X } from 'lucide-react'
+import { useState, useCallback } from 'react'
+import { ChevronDown, ChevronRight, FileText, Folder, Plus, Save, Play, X, Cpu, Box } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
-// Dynamically import Monaco Editor to avoid SSR issues
+// Dynamically import Monaco Editor
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false })
 
-interface FileItem {
-  id: string
-  name: string
-  type: 'file' | 'folder'
-  expanded?: boolean
-  children?: string[]
-  parent?: string
-}
+interface FileItem { id: string; name: string; type: 'file' | 'folder'; expanded?: boolean; children?: string[]; parent?: string }
+interface MarketplaceItem { id: string; name: string; description: string; installed?: boolean }
+interface AISuggestion { id: string; prompt: string; output: string }
 
 export default function WonderSpace() {
   const [selectedFile, setSelectedFile] = useState('index.jsx')
   const [openTabs, setOpenTabs] = useState(['index.jsx', 'styles.css'])
-
   const [fileTree, setFileTree] = useState<FileItem[]>([
-    { id: '1', name: 'src', type: 'folder', expanded: true, children: ['2', '3', '4'] },
-    { id: '2', name: 'index.jsx', type: 'file', parent: '1' },
-    { id: '3', name: 'styles.css', type: 'file', parent: '1' },
-    { id: '4', name: 'App.jsx', type: 'file', parent: '1' },
+    { id: '1', name: 'src', type: 'folder', expanded: true, children: ['2','3','4'] },
+    { id: '2', name: 'index.jsx', type: 'file', parent:'1' },
+    { id: '3', name: 'styles.css', type: 'file', parent:'1' },
+    { id: '4', name: 'App.jsx', type: 'file', parent:'1' },
     { id: '5', name: 'package.json', type: 'file' },
   ])
-
-  const [fileContents, setFileContents] = useState({
-    'index.jsx': `import React from "react";
-import "./styles.css";
-
-function App() {
-  return (
-    <div className="container">
-      <h1>Welcome to WonderSpace</h1>
-      <p>Your multi-platform code editor & builder</p>
-      <p className="tagline">Build, edit, and deploy across all platforms</p>
-    </div>
-  );
-}
-
-export default App;`,
-    'styles.css': `.container {
-  padding: 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-h1 {
-  margin: 0;
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-p {
-  margin: 5px 0;
-  font-size: 1.1rem;
-  opacity: 0.95;
-}
-
-.tagline {
-  font-size: 0.9rem;
-  margin-top: 15px;
-  font-style: italic;
-  opacity: 0.8;
-}`,
-    'App.jsx': 'export default function App() { return <h1>App Component</h1> }',
-    'package.json': '{"name": "wonderspace", "version": "1.0.0", "description": "Multi-platform code editor"}',
+  const [fileContents,setFileContents] = useState<Record<string,string>>({
+    'index.jsx':`import React from "react";\nimport "./styles.css";\n\nfunction App(){return(<div className="container"><h1>Welcome to WonderSpace</h1></div>);}\nexport default App;`,
+    'styles.css':`.container{padding:30px;min-height:100vh;color:white;display:flex;align-items:center;justify-content:center;}`,
+    'App.jsx':'export default function App(){return <h1>App Component</h1>}',
+    'package.json':'{"name":"wonderspace","version":"1.0.0"}',
   })
 
-  const toggleFolder = (id: string) => {
-    setFileTree(
-      fileTree.map((item) =>
-        item.id === id ? { ...item, expanded: !item.expanded } : item
-      )
-    )
-  }
+  const [marketplace,setMarketplace] = useState<MarketplaceItem[]>([
+    {id:'ext1',name:'Prettier',description:'Code formatter'},
+    {id:'ext2',name:'Tailwind IntelliSense',description:'Tailwind CSS suggestions'},
+    {id:'ext3',name:'React Snippets',description:'React component snippets'},
+  ])
 
-  const handleFileSelect = (fileName: string) => {
-    setSelectedFile(fileName)
-    if (!openTabs.includes(fileName)) {
-      setOpenTabs([...openTabs, fileName])
+  const [aiPrompt,setAiPrompt] = useState('')
+  const [aiSuggestions,setAiSuggestions] = useState<AISuggestion[]>([])
+
+  const handleFileSelect=(fileName:string)=>{setSelectedFile(fileName);if(!openTabs.includes(fileName)) setOpenTabs([...openTabs,fileName])}
+  const closeTab=(fileName:string)=>{const newTabs=openTabs.filter(tab=>tab!==fileName);setOpenTabs(newTabs);if(selectedFile===fileName&&newTabs.length)setSelectedFile(newTabs[0])}
+  const handleEditorChange=(value?:string)=>{if(value!==undefined){setFileContents(prev=>({...prev,[selectedFile]:value}))}}
+  const getFileLanguage=(filename:string)=>{if(filename.endsWith('.css')) return 'css'; if(filename.endsWith('.json')) return 'json'; return 'javascript'}
+  const toggleFolder=(id:string)=>{setFileTree(tree=>tree.map(item=>item.id===id?{...item,expanded:!item.expanded}:item))}
+  const installExtension=(id:string)=>{setMarketplace(prev=>prev.map(item=>item.id===id?{...item,installed:true}:item))}
+  const runAISuggestion=()=>{if(!aiPrompt) return; const output=`// AI Output for: ${aiPrompt}\nconsole.log("Generated code...");`; setAiSuggestions(prev=>[...prev,{id:Date.now().toString(),prompt:aiPrompt,output}]); setAiPrompt('')}
+  const handleDrop=useCallback((e:React.DragEvent)=>{e.preventDefault(); const fileName=e.dataTransfer.getData('fileName'); if(fileName&&!fileContents[fileName]){setFileContents(prev=>({...prev,[fileName]:'// New file content'})); handleFileSelect(fileName)}},[fileContents])
+  const handleDragOver=(e:React.DragEvent)=>e.preventDefault()
+
+  const RenderFileItem=({item}:{item:FileItem})=>{
+    if(item.type==='folder'){
+      const children=item.children?.map(id=>fileTree.find(f=>f.id===id)).filter(Boolean) as FileItem[]
+      return(<div key={item.id}><div onClick={()=>toggleFolder(item.id)} className="flex items-center gap-1 cursor-pointer hover:bg-gray-700 px-2 py-1 rounded transition">{item.expanded?<ChevronDown size={16}/>:<ChevronRight size={16}/>}<Folder size={16} className="text-yellow-400"/><span className="text-sm text-gray-200">{item.name}</span></div>{item.expanded&&<div className="ml-4 space-y-1">{children.map(c=><RenderFileItem key={c.id} item={c}/> )}</div>}</div>)
     }
+    return(<div onClick={()=>handleFileSelect(item.name)} className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded transition ${selectedFile===item.name?'bg-red-600 text-red-100':'text-gray-300 hover:bg-gray-700'}`}><FileText size={16}/><span className="text-sm">{item.name}</span></div>)
   }
 
-  const closeTab = (fileName: string) => {
-    const newTabs = openTabs.filter((tab) => tab !== fileName)
-    setOpenTabs(newTabs)
-    if (selectedFile === fileName && newTabs.length > 0) {
-      setSelectedFile(newTabs[0])
-    }
-  }
-
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      setFileContents((prev) => ({
-        ...prev,
-        [selectedFile]: value,
-      }))
-    }
-  }
-
-  const getFileLanguage = (filename: string): string => {
-    if (filename.endsWith('.css')) return 'css'
-    if (filename.endsWith('.json')) return 'json'
-    return 'javascript'
-  }
-
-  return (
+  return(
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-800 to-indigo-800 border-b border-purple-700 px-6 py-4 flex items-center justify-between shadow-lg">
-        <div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ✨ WonderSpace
-          </h1>
-          <p className="text-xs text-gray-300">Multi-platform Code Editor & Builder</p>
-        </div>
+      <div className="bg-gradient-to-r from-red-800 to-red-600 border-b border-red-700 px-6 py-4 flex items-center justify-between shadow-lg">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-red-400 to-red-200 bg-clip-text text-transparent">✨ WonderSpace</h1>
         <div className="flex gap-3">
-          <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition transform hover:scale-105">
-            <Play size={16} /> Run
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition transform hover:scale-105">
-            <Save size={16} /> Save
-          </button>
+          <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium"><Play size={16}/> Run</button>
+          <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium"><Save size={16}/> Save</button>
         </div>
       </div>
 
-      {/* Main Container */}
+      {/* Main */}
       <div className="flex flex-1 overflow-hidden">
-        {/* File Explorer Sidebar */}
-        <div className="w-64 bg-gray-800 border-r border-gray-700 overflow-y-auto shadow-inner">
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-sm text-gray-200">📁 Explorer</h2>
-              <Plus size={18} className="cursor-pointer hover:text-blue-400 transition" />
-            </div>
-
-            {/* File Tree */}
-            <div className="space-y-1">
-              {fileTree
-                .filter((item) => !item.parent)
-                .map((item) => (
-                  <RenderFileItem
-                    key={item.id}
-                    item={item}
-                    allItems={fileTree}
-                    selectedFile={selectedFile}
-                    onSelect={handleFileSelect}
-                    onToggleFolder={toggleFolder}
-                  />
-                ))}
-            </div>
+        {/* Explorer */}
+        <div className="w-64 bg-gray-800 border-r border-gray-700 overflow-y-auto shadow-inner p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-sm text-gray-200">📁 Explorer</h2>
+            <Plus size={18} className="cursor-pointer hover:text-red-400 transition"/>
           </div>
+          {fileTree.filter(f=>!f.parent).map(item=><RenderFileItem key={item.id} item={item}/> )}
         </div>
 
-        {/* Editor Area */}
-        <div className="flex-1 flex flex-col bg-gray-900">
-          {/* Tabs */}
-          <div className="bg-gray-800 border-b border-gray-700 flex overflow-x-auto shadow">
-            {openTabs.map((tab) => (
-              <div
-                key={tab}
-                onClick={() => setSelectedFile(tab)}
-                className={`px-4 py-3 cursor-pointer border-r border-gray-700 flex items-center gap-2 transition whitespace-nowrap ${
-                  selectedFile === tab
-                    ? 'bg-gray-700 border-b-2 border-blue-400 text-blue-300'
-                    : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-                }`}
-              >
-                <FileText size={14} />
-                <span className="text-sm font-medium">{tab}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    closeTab(tab)
-                  }}
-                  className="ml-1 hover:text-red-400 transition hover:bg-red-900 rounded p-0.5"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Editor */}
-          <div className="flex-1 overflow-hidden">
-            {selectedFile && (
-              <Editor
-                height="100%"
-                language={getFileLanguage(selectedFile)}
-                value={fileContents[selectedFile as keyof typeof fileContents] || ''}
-                onChange={handleEditorChange}
-                theme="vs-dark"
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  lineNumbers: 'on',
-                  wordWrap: 'on',
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                  tabSize: 2,
-                  insertSpaces: true,
-                }}
-              />
-            )}
-          </div>
+        {/* Editor */}
+        <div className="flex-1 flex flex-col bg-gray-900" onDrop={handleDrop} onDragOver={handleDragOver}>
+          <div className="bg-gray-800 border-b border-gray-700 flex overflow-x-auto shadow">{openTabs.map(tab=><div key={tab} className={`px-4 py-3 cursor-pointer border-r border-gray-700 flex items-center gap-2 transition whitespace-nowrap ${selectedFile===tab?'bg-gray-700 border-b-2 border-red-400 text-red-300':'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}><FileText size={14}/><span className="text-sm font-medium">{tab}</span><button onClick={e=>{e.stopPropagation();closeTab(tab)}} className="ml-1 hover:text-red-400 transition hover:bg-red-900 rounded p-0.5"><X size={14}/></button></div>)}</div>
+          <div className="flex-1 overflow-hidden">{selectedFile && <Editor height="100%" language={getFileLanguage(selectedFile)} value={fileContents[selectedFile]||''} onChange={handleEditorChange} theme="vs-dark" options={{minimap:{enabled:false},fontSize:13,lineNumbers:'on',wordWrap:'on',scrollBeyondLastLine:false,automaticLayout:true}}/>}</div>
         </div>
 
-        {/* Preview Panel */}
-        <div className="w-80 bg-gray-800 border-l border-gray-700 p-6 overflow-auto shadow-inner">
-          <h3 className="font-semibold mb-4 text-sm text-gray-200 flex items-center gap-2">
-            👁️ Preview
-          </h3>
-          <div className="bg-gradient-to-br from-purple-900 to-indigo-900 text-white p-6 rounded-lg shadow-lg space-y-4">
-            <h1 className="text-3xl font-bold">Welcome to WonderSpace</h1>
-            <p className="text-gray-200">Your multi-platform code editor & builder</p>
-            <p className="text-sm text-gray-300 italic">Build, edit, and deploy across all platforms</p>
-            <div className="border-t border-purple-700 pt-4 mt-4">
-              <p className="text-xs text-gray-400">ℹ️ Live preview integration coming soon</p>
-            </div>
+        {/* Marketplace + AI */}
+        <div className="w-80 bg-gray-800 border-l border-gray-700 overflow-auto p-4 space-y-6">
+          <div>
+            <h3 className="font-semibold text-sm text-gray-200 flex items-center gap-2"><Box size={16}/> Marketplace</h3>
+            <div className="space-y-2 mt-2">{marketplace.map(item=><div key={item.id} className="flex justify-between items-center p-2 bg-gray-700 rounded hover:bg-gray-600 transition"><div><p className="text-gray-100 font-medium">{item.name}</p><p className="text-gray-300 text-xs">{item.description}</p></div><button onClick={()=>installExtension(item.id)} className={`px-2 py-1 text-xs rounded ${item.installed?'bg-green-600':'bg-red-600'} hover:scale-105 transition`}>{item.installed?'Installed':'Install'}</button></div>)}</div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm text-gray-200 flex items-center gap-2"><Cpu size={16}/> AI Assistant</h3>
+            <textarea className="w-full p-2 mt-2 text-black rounded resize-none h-16" placeholder="Describe code to generate..." value={aiPrompt} onChange={e=>setAiPrompt(e.target.value)}/>
+            <button onClick={runAISuggestion} className="w-full mt-2 px-2 py-1 bg-red-600 hover:bg-red-700 rounded text-sm font-medium transition">Run AI</button>
+            <div className="mt-2 max-h-48 overflow-y-auto space-y-1">{aiSuggestions.map(s=><pre key={s.id} className="bg-gray-700 p-2 rounded text-xs overflow-auto">{s.output}</pre>)}</div>
           </div>
         </div>
       </div>
 
-      {/* Terminal/Bottom Panel */}
+      {/* Bottom */}
       <div className="bg-gray-900 border-t border-gray-700 p-4 h-24 overflow-y-auto shadow-inner">
-        <div className="text-xs text-gray-400 space-y-1 font-mono">
+        <div className="text-xs text-gray-400 font-mono">
           <div>$ npm run dev</div>
           <div className="text-green-400">✓ Server running on http://localhost:3000</div>
           <div>✓ WonderSpace ready</div>
@@ -245,67 +108,4 @@ p {
       </div>
     </div>
   )
-}
-
-// File Item Component
-interface RenderFileItemProps {
-  item: FileItem
-  allItems: FileItem[]
-  selectedFile: string
-  onSelect: (name: string) => void
-  onToggleFolder: (id: string) => void
-}
-
-function RenderFileItem({
-  item,
-  allItems,
-  selectedFile,
-  onSelect,
-  onToggleFolder,
-}: RenderFileItemProps) {
-  if (item.type === 'folder') {
-    const children = item.children ? allItems.filter((i) => item.children?.includes(i.id)) : []
-
-    return (
-      <div key={item.id}>
-        <div
-          onClick={() => onToggleFolder(item.id)}
-          className="flex items-center gap-1 cursor-pointer hover:bg-gray-700 px-2 py-1 rounded transition"
-        >
-          {item.expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <Folder size={16} className="text-yellow-400" />
-          <span className="text-sm text-gray-200">{item.name}</span>
-        </div>
-
-        {item.expanded && (
-          <div className="ml-4 space-y-1">
-            {children.map((child) => (
-              <RenderFileItem
-                key={child.id}
-                item={child}
-                allItems={allItems}
-                selectedFile={selectedFile}
-                onSelect={onSelect}
-                onToggleFolder={onToggleFolder}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  return (
-    <div
-      onClick={() => onSelect(item.name)}
-      className={`flex items-center gap-2 cursor-pointer px-2 py-1 rounded transition ${
-        selectedFile === item.name
-          ? 'bg-blue-600 text-blue-100'
-          : 'text-gray-300 hover:bg-gray-700'
-      }`}
-    >
-      <FileText size={16} className={selectedFile === item.name ? 'text-blue-300' : 'text-gray-400'} />
-      <span className="text-sm">{item.name}</span>
-    </div>
-  )
-}
+    }
