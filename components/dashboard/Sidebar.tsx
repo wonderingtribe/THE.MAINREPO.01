@@ -34,12 +34,12 @@ export const Sidebar: React.FC = () => {
 
   return (
     <aside className="hidden md:block fixed left-0 top-24 bottom-0 w-64 z-40">
-      <div className="glass-nav mx-4 rounded-2xl p-4 h-full">
+      <div className="glass-nav mx-4 rounded-2xl p-4 h-full overflow-y-auto">
         <div className="flex flex-col gap-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            
+
             return (
               <Link
                 key={item.href}
@@ -50,8 +50,8 @@ export const Sidebar: React.FC = () => {
                     : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium truncate">{item.label}</span>
               </Link>
             );
           })}
