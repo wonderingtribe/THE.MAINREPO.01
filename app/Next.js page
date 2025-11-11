@@ -1,121 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
-import { FiCpu, FiBox } from 'react-icons/fi';
-import { Sidebar } from '@/components/dashboard/Sidebar';
-import { TopNavigation } from '@/components/dashboard/TopNavigation';
-import { BottomNavigation } from '@/components/dashboard/BottomNavigation';
-import { GlassCard } from '@/components/dashboard/GlassCard';
+import React, { useState, useEffect } from 'react';
+import { MarketplaceCard } from '@/components/MarketplaceCard';
+import { getMarketplaceItems } from '@/lib/marketplace';
 
-// Monaco editor dynamically loaded for SSR
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
+export default function MarketplacePage() {
+  const [items, setItems] = useState([]);
 
-// Sample Marketplace extensions
-const marketplaceExtensions = [
-  { id: 'ext1', name: 'Dark Theme', description: 'Adds a dark theme to your IDE' },
-  { id: 'ext2', name: 'AI Autocomplete', description: 'AI code suggestions in real time' },
-  { id: 'ext3', name: 'Terminal Plus', description: 'Enhanced terminal features' },
-];
-
-export default function WonderSpace() {
-  const [activeTab, setActiveTab] = useState<'editor' | 'terminal' | 'ai' | 'marketplace'>('editor');
-  const [installedExtensions, setInstalledExtensions] = useState<string[]>([]);
-  const [code, setCode] = useState('// Start coding...');
-
-  const toggleExtension = (id: string) => {
-    if (installedExtensions.includes(id)) {
-      setInstalledExtensions(installedExtensions.filter(ext => ext !== id));
-    } else {
-      setInstalledExtensions([...installedExtensions, id]);
-    }
-  };
+  useEffect(() => {
+    getMarketplaceItems().then(setItems);
+  }, []);
 
   return (
-    <div className="wonderland-bg min-h-screen flex flex-col">
-      <TopNavigation />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-4 overflow-auto">
-          <div className="flex gap-4 mb-4">
-            <button
-              className={`btn-primary ${activeTab === 'editor' ? 'bg-white/20' : ''}`}
-              onClick={() => setActiveTab('editor')}
-            >
-              Editor
-            </button>
-            <button
-              className={`btn-primary ${activeTab === 'terminal' ? 'bg-white/20' : ''}`}
-              onClick={() => setActiveTab('terminal')}
-            >
-              Terminal
-            </button>
-            <button
-              className={`btn-primary ${activeTab === 'ai' ? 'bg-white/20' : ''}`}
-              onClick={() => setActiveTab('ai')}
-            >
-              AI Assistant
-            </button>
-            <button
-              className={`btn-primary ${activeTab === 'marketplace' ? 'bg-white/20' : ''}`}
-              onClick={() => setActiveTab('marketplace')}
-            >
-              Marketplace
-            </button>
-          </div>
-
-          <div className="h-[70vh]">
-            {activeTab === 'editor' && (
-              <MonacoEditor
-                height="100%"
-                defaultLanguage="javascript"
-                value={code}
-                onChange={(value) => setCode(value || '')}
-                theme={installedExtensions.includes('ext1') ? 'vs-dark' : 'light'}
-              />
-            )}
-
-            {activeTab === 'terminal' && (
-              <GlassCard className="p-4 h-full overflow-auto bg-black text-white">
-                <div className="font-mono text-sm">Terminal: Type commands here...</div>
-              </GlassCard>
-            )}
-
-            {activeTab === 'ai' && (
-              <GlassCard className="p-4 h-full flex flex-col">
-                <div className="mb-2 flex items-center gap-2">
-                  <FiCpu /> <span className="font-bold">AI Assistant</span>
-                </div>
-                <textarea
-                  className="flex-1 p-4 bg-white/10 border-2 border-white/30 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  placeholder="Ask AI to generate code, refactor, or give suggestions..."
-                />
-                <button className="btn-primary mt-2">Generate with AI</button>
-              </GlassCard>
-            )}
-
-            {activeTab === 'marketplace' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {marketplaceExtensions.map(ext => (
-                  <GlassCard key={ext.id} className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FiBox /> <span className="font-bold">{ext.name}</span>
-                    </div>
-                    <p className="text-white/80 mb-2">{ext.description}</p>
-                    <button
-                      onClick={() => toggleExtension(ext.id)}
-                      className="btn-primary"
-                    >
-                      {installedExtensions.includes(ext.id) ? 'Uninstall' : 'Install'}
-                    </button>
-                  </GlassCard>
-                ))}
-              </div>
-            )}
-          </div>
-        </main>
+    <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold mb-6">Marketplace</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map((item) => (
+          <MarketplaceCard key={item.id} item={item} />
+        ))}
       </div>
-      <BottomNavigation />
     </div>
   );
 }
