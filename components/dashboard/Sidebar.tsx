@@ -43,12 +43,12 @@ export const Sidebar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden whitespace-nowrap text-ellipsis ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                 isActive 
                   ? 'bg-white/20 text-white shadow-lg' 
                   : 'text-white/80 hover:text-white hover:bg-white/10'
               }`}
-              title={item.label} // tooltip on hover
+              title={item.label} // Tooltip for full label
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
               <span className="font-medium truncate">{item.label}</span>
