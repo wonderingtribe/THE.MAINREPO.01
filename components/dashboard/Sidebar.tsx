@@ -33,29 +33,28 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="hidden md:block fixed left-0 top-24 bottom-0 w-64 z-40">
-      <div className="glass-nav mx-4 rounded-2xl p-4 h-full overflow-y-auto">
-        <div className="flex flex-col gap-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
+    <aside className="hidden md:block fixed left-0 top-24 bottom-0 w-64 z-40 overflow-y-auto">
+      <div className="glass-nav mx-4 rounded-2xl p-4 h-full flex flex-col gap-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive 
-                    ? 'bg-white/20 text-white shadow-lg' 
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="font-medium truncate">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden whitespace-nowrap text-ellipsis ${
+                isActive 
+                  ? 'bg-white/20 text-white shadow-lg' 
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`}
+              title={item.label} // tooltip on hover
+            >
+              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium truncate">{item.label}</span>
+            </Link>
+          );
+        })}
       </div>
     </aside>
   );
