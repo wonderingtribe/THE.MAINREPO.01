@@ -1,200 +1,169 @@
-# GitHub Copilot Instructions for AI-WONDERLAND
+# Copilot Coding Agent - Repository Onboarding Notes
 
-## Project Overview
+Purpose
+- Give a coding agent everything needed to make, test, and validate code changes quickly and safely.
+- Reduce guesswork and bash/build failures.
+- Highlight required tools, common pitfalls, and validation steps so PRs the agent opens are more likely to pass CI and be accepted.
 
-This is a comprehensive AI builder for websites and apps that combines a powerful backend API with a modern React/Next.js frontend. The project is cross-platform, integrates with multiple AI services, and provides API keys, domains, and related services to users. It features drag-and-drop UI construction, code export, multi-page editing, AI model integration, API generator, domain management, and analytics. This project is containerized with Docker to ensure multiplatform compatibility.
+IMPORTANT NOTE ABOUT REPOSITORY INVENTORY
+- I queried the repository index to assemble this file. That API response may be incomplete (directory listing results are capped). If something below looks out-of-date, check the repository contents UI: https://github.com/wonderingtribe/THE.MAINREPO.01/tree/main before making assumptions.
 
-## Preferred Technologies
+High-level summary
+- This repository appears to be a multi-language monorepo / project collection oriented around a TypeScript/Next.js frontend and Node.js services, with Python and Go components present elsewhere. It contains docs, Docker support, CI configuration (Azure Pipelines), and multiple helper files (Makefile, docker-compose, sonar config).
+- Primary languages present (by repo statistics): TypeScript, JavaScript, HTML, CSS, Python, Go, Shell, Dockerfile.
 
-### Backend
+Top-level facts (important for every change)
+- Node runtime: engines in package descriptors require Node >= 18 and npm >= 9. Use Node 18+ (prefer LTS). Always match this when running npm commands or creating containers.
+- Lockfile: package-lock.json exists. Use npm ci (not npm install) in CI and when reproducing CI locally for deterministic installs.
+- TypeScript is used (tsconfig.json and next-env.d.ts present). If you change types, run type checks.
+- Tests use Jest (jest.config.js) — run jest locally before pushing.
+- Docker and docker-compose definitions exist (Dockerfile, docker-compose.yml). Many developers build/run inside containers; ensure Dockerfile and compose commands remain consistent.
+- CI/validation: azure-pipelines.yml is present (CI may run in Azure Pipelines). There may also be GitHub workflows (check .github/workflows). Replicate steps locally when possible.
 
-- Node.js/Express for REST API
-- MongoDB (via Mongoose) and PostgreSQL (via Sequelize) for data storage
-- Redis for caching
-- JWT for authentication
-- Docker for containerization
+Build & validation checklist (what you must do before opening a PR)
+These are prescriptive — follow them in order and do not skip checks.
 
-### Frontend
+Environment
+- Always create a clean workspace or run in a fresh container.
+- Always copy `.env.example` -> `.env` or set environment variables from `.env.example` to avoid missing config at runtime. Never commit secrets.
+- If you touch Python code, install Python dependencies: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt.
+- For Node work, use Node 18+ and npm 9+. Use nvm or Docker to lock version if needed.
 
-- React 19 (with functional components and hooks)
-- Next.js 16 (for SSR/SSG)
-- Tailwind CSS for styling
-- Framer Motion for animations
-- @dnd-kit and react-dnd for drag-and-drop functionality
+Bootstrap (first-time setup)
+1. Node (root or per-package):
+   - nvm install 18
+   - nvm use 18
+   - npm ci
+   - Note: use `npm ci` to ensure the lockfile is respected. If package-lock.json and package.json diverge, run `npm install` locally and update the lockfile in a dedicated dependency PR.
+2. Python:
+   - python3 -m venv .venv
+   - source .venv/bin/activate
+   - pip install -r requirements.txt
+3. Containers (optional/isolated env):
+   - docker compose up --build (or docker-compose up --build) — this will start services defined in docker-compose.yml.
 
-## Code Style and Standards
+Build
+- Root-level "build" may be a placeholder. Real builds may live in subprojects (e.g., frontend or AI-WONDERLAND-INNOVATION-). Inspect package.json files in the subfolders.
+- General build sequence:
+  1. npm ci
+  2. npm run lint
+  3. npm run test (or npm run test:coverage)
+  4. npx tsc --noEmit (typecheck; if no global build script, run in workspace/package where tsconfig.json lives)
+  5. npm run build (where applicable; if root build is placeholder, locate and run the package-level build)
+- If a Makefile is present, prefer `make help` to see implemented targets and follow project-specific targets (e.g., `make dev`, `make test`).
 
-### General Guidelines
+Test and validations
+- Always run tests and linters locally:
+  - npm run lint
+  - npm run lint:fix (to auto-fix where safe)
+  - npm run format or prettier --write .
+  - npm run test (jest --passWithNoTests). If Jest reports zero tests, validate test directories exist.
+  - For TypeScript: npx tsc --noEmit
+- Security and dependency checks:
+  - npm audit (or npm audit fix for low-risk upgrades — open a dependency PR for upgrades).
+  - Scan for secrets (do not commit .env values). Check SECURITY.md for reporting procedure.
+  - If Sonar is used (sonar-project.properties exists), run local Sonar scan only if configured locally; otherwise rely on CI.
 
-- Write clean, readable, and maintainable code.
-- Follow consistent naming conventions. Use `camelCase` for variables and functions, and `PascalCase` for classes.
-- Keep functions small and focused on a single responsibility.
-- Use ES6+ syntax throughout
-- Favor arrow functions and functional React components
-- Prefer composition over inheritance
-- Use Context API and custom hooks for state management
-- Use PropTypes or TypeScript (optional) for type safety
-- Prefer async/await for asynchronous code
+Replicating CI locally
+- Inspect azure-pipelines.yml and any .github/workflows/ files (if present). Reproduce:
+  1. Clean checkout: git clean -fdx
+  2. npm ci
+  3. npm run lint
+  4. npm run test
+  5. Run any build step referenced by the pipeline (e.g., `make build` or package-level `npm run build`)
+- If something in CI refers to environment variables or secrets, confirm that alternative local values are safe to use or mock them.
 
-### JavaScript Best Practices
+Common pitfalls & observed guidance (from repository layout)
+- Always use the lockfile: use `npm ci` (CI) and `npm install` only when intentionally updating dependencies.
+- The root package.json has placeholder build steps — the "real" build may be in subfolders; search for package.json files in subdirs and run their build scripts.
+- Do not commit .env or secrets. Use .env.example as a template.
+- If you update TypeScript types, run full typecheck and existing tests. New type errors indicate you must adjust code or types together.
+- Docker builds can mask local runtime differences. If a Docker image is used in CI, build and run the image locally before opening the PR.
 
-- Use modern JavaScript (ES6+ features like `const`, `let`, arrow functions, and classes).
-- Use **ESLint** for static analysis to find and fix problems in your JavaScript code. Adhere to the configured ESLint rules.
-- Use **Prettier** for consistent code formatting. Ensure code is formatted before committing.
-- Document functions, classes, and complex logic using **JSDoc** comments.
+Project layout (key files & locations you should check first)
+- Root (priority list — check these files before making changes):
+  - README.md
+  - PROJECT_SETUP_SUMMARY.md
+  - package.json, package-lock.json
+  - tsconfig.json, next-env.d.ts, next.config.js / next.config.ts
+  - jest.config.js
+  - Dockerfile, docker-compose.yml
+  - Makefile
+  - azure-pipelines.yml
+  - sonar-project.properties
+  - .env.example, .env.local
+  - SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
+  - requirements.txt (Python)
+  - directories: src/, frontend/, backend/, app/, services/, scripts/, docs/, public/
+- Subprojects:
+  - AI-WONDERLAND-INNOVATION- (contains its own package.json and UI packages)
+  - frontend/ (likely Next.js app)
+  - backend/ (check for service-specific package.json or language-specific setup)
+- CI/CD:
+  - azure-pipelines.yml — primary pipeline to inspect and replicate.
+  - workflow_config.yml — may control GitHub workflow behavior.
 
-## Security Best Practices
+What to search (before changing anything)
+- Grep for:
+  - HACK, TODO, FIXME, XXX — these indicate fragile code.
+  - "TODO: fix" and legacy comments in critical paths.
+  - package.json scripts in subfolders.
+- Look into:
+  - azure-pipelines.yml and any GitHub Actions under .github/workflows/
+  - PACKAGE.json files in any subdirs to find actual build/test commands
+  - .env.example for required env vars and secrets masking rules
+  - Makefile targets (run `make help`)
 
-### API Keys and Secrets
+If something fails locally
+- Step 1: Run `git status` and ensure you are on a clean branch
+- Step 2: Clean install:
+  - rm -rf node_modules
+  - npm ci
+  - (for Python) rm -rf .venv && recreate
+- Step 3: Re-run linter and tests
+- Step 4: If a command times out in CI, check pipeline logs for timeouts and try running the failing step locally with increased verbosity.
+- If a dependency mismatch appears (lockfile vs package.json), do not update automatically in the target PR — open a small dependency-update PR with only package/lock changes and CI green before merging larger changes.
 
-- **NEVER** hardcode API keys, secrets, or credentials in the code.
-- Use environment variables (e.g., via `.env` files for local development) for all sensitive configuration.
-- Add `.env` and other secret files to `.gitignore` to prevent accidental commits.
-- In production, use a secure secret management system provided by your cloud provider (e.g., GitHub Secrets, AWS Secrets Manager, Azure Key Vault).
+Security & code safety checks (must-do)
+- Do not include secrets in commits. Use .env.example to explain required env variables and mark any optional keys.
+- Run `npm audit` and include an audit summary in PRs if you modified dependencies.
+- Check SECURITY.md for reporting vulnerabilities and follow the repo policy if you find a secret or vuln.
+- When modifying auth, crypto, or payment code (Stripe present), run integration tests and add safeguards. Prefer small, reversible changes.
 
-### Input Validation
+Editing & PR guidance
+- Keep changes minimal and scoped. Large refactors require a design/plan in an issue first.
+- Run all validation steps locally. Add or update unit tests for behavioral changes.
+- Update package-lock.json only in dependency PRs.
+- Include a PR description that lists the exact local commands you ran to validate your change (install, lint, test, build).
+- If you modify runtime or build versions (Node, Python), include rationale and CI proof.
 
-- Always validate and sanitize user input to prevent XSS and other injection attacks.
-- Implement proper authentication and authorization checks for all API endpoints.
-- If using a database, use an ORM or parameterized queries to prevent SQL injection.
-- Validate file uploads, restrict file types, and scan for malware.
+When to search further
+- Trust this file by default. Only perform codebase-wide searches if:
+  - The instructions above are incomplete for the task at hand.
+  - CI fails in a way not explained here.
+  - There are missing package.json scripts for the area you need to change.
+- When you search, prefer:
+  - package.json files in subdirectories
+  - CI config files (azure-pipelines.yml, .github/workflows/)
+  - the Makefile and docker-compose.yml for the intended environment.
 
-### Data Protection
+Quick reference command list
+- Bootstrap Node: nvm install 18 && nvm use 18 && npm ci
+- Lint: npm run lint
+- Lint fix: npm run lint:fix
+- Format: npm run format
+- Test: npm run test
+- Typecheck: npx tsc --noEmit
+- Docker compose: docker compose up --build
+- Python deps: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+- Clean workspace: git clean -fdx && npm ci
 
-- Encrypt sensitive data at rest and in transit.
-- Use HTTPS for all network communications.
-- Implement proper error handling that does not expose sensitive information or stack traces to the user.
-- Follow the principle of least privilege for access control.
+Final instruction to the agent
+- Follow these instructions strictly before making and opening any code-change PR.
+- Only perform targeted searches when the instructions are insufficient or proven incorrect.
+- Double-check security-sensitive changes (auth, payments, secret handling) with a human reviewer before merging.
 
-## Cross-Platform and Deployment (Using Docker)
+If any of the specifics above contradicts files you find (package.json scripts, CI contents, Makefile targets), trust the source files — update this onboarding file in a small PR describing the discrepancy so future agents have an accurate saved reference.
 
-- **Containerization is Key**: The project uses **Docker** to ensure a consistent environment across development, testing, and production, regardless of the host operating system (Windows, macOS, Linux). All new services and components should be containerized.
-- **Use the Dockerfile**: Adhere to the existing `Dockerfile` for building the application's container image. Any changes to dependencies or build steps should be reflected there.
-- **Leverage the Makefile**: The `Makefile` provides convenient commands for common Docker operations (e.g., `make build`, `make run`, `make test`). Use these commands to streamline your workflow and ensure consistency. Add new commands to the `Makefile` for any new routine tasks.
-- **Platform-Independent Code**: Even within Docker, write platform-independent JavaScript. For instance, use the `path` module in Node.js for handling file paths (`path.join()`, `path.resolve()`) instead of hardcoding slashes.
-- **Configuration**: All environment-specific configurations should be passed into the container using environment variables, not baked into the image. This aligns with the security best practice of not hardcoding secrets.
-- **Testing**: When testing locally, run your tests inside the Docker container to mimic the production environment as closely as possible.
-
-## Testing Requirements
-
-### Test Coverage and Frameworks
-
-- Write unit tests for all new features and bug fixes using a framework like **Jest** or **Mocha**.
-- For end-to-end testing, consider using a tool like **Cypress** or **Playwright**.
-- Aim for high test coverage (ideally 80%+).
-- Include edge cases, error scenarios, and integration points in your tests.
-
-### Test Organization
-
-- Place test files alongside the source files with a `.test.js` or `.spec.js` extension, or in a `__tests__` directory.
-- Use descriptive test names that explain what is being tested (e.g., `it('should return an error for invalid input')`).
-- Follow the Arrange-Act-Assert pattern in tests.
-- Mock external dependencies, APIs, and services using Jest's built-in mocking capabilities or libraries like `sinon`.
-
-## AI Integration Guidelines
-
-- Implement robust error handling for AI service failures (e.g., API downtime, unexpected responses).
-- Add rate limiting and exponential backoff/retry logic for AI API calls to handle transient errors.
-- Cache AI responses when appropriate to improve performance and reduce costs.
-- Document which AI services are being used, their purpose, and their API versions.
-- Consider fallback options or graceful degradation when AI services are unavailable.
-- Provide connectors for user-supplied and built-in AI models
-
-## Project Structure
-
-### Backend Structure
-
-- `src/api/`: API controllers, routes, and middleware
-- `src/auth/`: Authentication and authorization logic
-- `src/config/`: Configuration management
-- `src/database/`: Database connections and models
-- `src/models/`: Data models (User, Project, etc.)
-
-### Frontend Structure
-
-- `src/components/builder/`: Drag-and-drop canvas, sidebar, toolbar
-- `src/components/editor/`: Code editor integration (Monaco, CodeMirror)
-- `src/components/preview/`: Live preview modules
-- `src/components/pages/`: Multi-page and routing logic
-- `src/components/ai/`: AI integration widgets
-- `src/components/auth/`: Authentication forms
-- `src/components/api/`: API connector UI
-- `src/components/marketplace/`: Component/plugin marketplace
-- `src/components/templates/`: Template gallery/importer
-- `src/components/domain/`: Domain management UI
-- `src/components/analytics/`: Analytics widgets
-- `src/context/`: React contexts for state/user/builder
-- `src/hooks/`: Custom React hooks
-- `src/services/`: API and integration logic
-- `src/utils/`: Helper utilities
-- `src/styles/`: Global and component styles
-
-## Special Instructions
-
-### Frontend Features
-
-- For drag-and-drop logic, use react-dnd or @dnd-kit
-- For live code editing, use Monaco Editor or CodeMirror
-- For code export, generate clean HTML/JSX or Next.js code
-- For authentication, support Auth0, Firebase Auth, or Supabase Auth
-- For domains, support manual assignment and future reseller API integration
-- For analytics, integrate Google Analytics or similar tools
-
-### Backend Features
-
-- Use Express with proper middleware (helmet, cors, rate limiting)
-- Implement JWT-based authentication with refresh tokens
-- Use Joi for input validation
-- Support both MongoDB and PostgreSQL databases
-- Implement Redis caching for performance
-- Integrate with Stripe for payments
-
-## Dependencies and Packages
-
-- Manage dependencies using `package.json`. Use `npm` or `yarn` for package management.
-- Minimize external dependencies to reduce the attack surface and bundle size.
-- Keep dependencies up-to-date with security patches using tools like `npm audit` or GitHub's Dependabot.
-- Document the purpose of each dependency in the `README.md` or a contributing guide.
-- Review licenses before adding new dependencies to ensure compatibility.
-
-## Performance Considerations
-
-- Optimize for performance without sacrificing readability.
-- Implement caching strategies (in-memory, Redis, etc.) for frequently accessed data.
-- Avoid unnecessary API calls or database queries. Use techniques like pagination and filtering.
-- Profile and monitor performance-critical code paths using tools like Node.js's built-in profiler or third-party APM services.
-
-## Git and Version Control
-
-- Write clear and descriptive commit messages following the [Conventional Commits](https://www.conventionalcommits.org/) specification.
-- Keep commits small and focused on a single logical change.
-- Create feature branches from `main` or `develop` for new development.
-- Review code changes via Pull Requests before merging.
-
-## Continuous Integration
-
-- Ensure all code passes CI checks (linting, testing, building) before merging. Configure these checks in **GitHub Actions**.
-- Fix failing tests promptly.
-- Monitor GitHub Actions workflows for build and test results.
-
-## Example Tasks
-
-### Frontend Tasks
-
-- Suggest code for adding new UI components to the builder
-- Suggest code for implementing multi-page navigation
-- Suggest code for integrating a REST API
-- Suggest code for exporting user projects as HTML/React/Next.js code
-- Suggest code for adding authentication and user management
-
-### Backend Tasks
-
-- Suggest code for creating new API endpoints
-- Suggest code for implementing authentication flows
-- Suggest code for database migrations
-- Suggest code for integrating new AI providers
-- Suggest code for implementing caching strategies
-
----
-
-This file is intended to help GitHub Copilot provide context-aware, high-quality suggestions for this project.
+Acknowledgement
+- These notes were prepared from a repository inventory snapshot. Verify azure-pipelines.yml and per-package package.json scripts before running CI-like sequences.
