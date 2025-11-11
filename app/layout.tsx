@@ -1,12 +1,14 @@
-import "./globals.css";
-import "./wonderland.css"; // 🪄 Wonderland theme styles
-import { AppContextProvider } from "@/contexts/AppContext";
-import { BuilderContextProvider } from "@/contexts/BuilderContext";
-import { UserContextProvider } from "@/contexts/UserContext";
+'use client';
+
+import './globals.css';
+import './wonderland.css';
+import { AppContextProvider } from '@/contexts/AppContext';
+import { BuilderContextProvider } from '@/contexts/BuilderContext';
+import { UserContextProvider } from '@/contexts/UserContext';
 
 export const metadata = {
-  title: "Frontend Builder",
-  description: "AI-driven website and SaaS builder platform",
+  title: 'Frontend Builder',
+  description: 'AI-driven website and SaaS builder platform',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
