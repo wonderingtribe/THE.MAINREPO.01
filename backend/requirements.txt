@@ -6,5 +6,5 @@ openai==2.7.2
 anthropic==0.18.0
 pillow==10.3.0
 pydantic==2.12.4
-httpx==0.26.0
+httpx==0.28.1
 aiofiles==25.1.0
