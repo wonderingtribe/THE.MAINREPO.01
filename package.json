@@ -52,8 +52,13 @@
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
+dependabot/npm_and_yarn/dotenv-17.2.3
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
+ main
     "express-rate-limit": "^7.2.0",
     "framer-motion": "^12.23.24",
     "helmet": "^7.1.0",
