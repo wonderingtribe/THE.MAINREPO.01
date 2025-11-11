@@ -1,13 +1,14 @@
-import "./globals.css";
-import "./wonderland.css"; // 🪄 Wonderland theme styles
-import { AppContextProvider } from "@/contexts/AppContext";
-import { BuilderContextProvider } from "@/contexts/BuilderContext";
-import { UserContextProvider } from "@/contexts/UserContext";
-import React from "react";
+'use client';
+
+import './globals.css';
+import './wonderland.css';
+import { AppContextProvider } from '@/contexts/AppContext';
+import { BuilderContextProvider } from '@/contexts/BuilderContext';
+import { UserContextProvider } from '@/contexts/UserContext';
 
 export const metadata = {
-  title: "Frontend Builder",
-  description: "AI-driven website and SaaS builder platform",
+  title: 'Frontend Builder',
+  description: 'AI-driven website and SaaS builder platform',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,10 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <UserContextProvider>
           <AppContextProvider>
             <BuilderContextProvider>
-              {/* Container with flex layout for sidebar + main content */}
-              <div className="wonderland-container p-6 flex h-screen">
-                {children}
-              </div>
+              <div className="wonderland-container p-6">{children}</div>
             </BuilderContextProvider>
           </AppContextProvider>
         </UserContextProvider>
