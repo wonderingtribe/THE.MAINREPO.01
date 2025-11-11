@@ -1,7 +1,6 @@
 /* Wonderland Theme Styles
    Designed for smooth transitions, light gradients, and immersive depth.
 */
-
 .wonderland-bg {
   background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
   background-size: 200% 200%;
@@ -17,6 +16,8 @@
   box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   transition: all 0.4s ease;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 .wonderland-container:hover {
@@ -36,13 +37,13 @@
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sidebar scroll fix */
+.sidebar {
+  overflow-y: auto;
+  max-height: 100vh;
 }
