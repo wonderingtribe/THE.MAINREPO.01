@@ -3,8 +3,12 @@ fastapi==0.121.0
 
  dependabot/pip/anthropic-0.72.0
 fastapi==0.109.0
+ dependabot/pip/uvicorn-standard--0.38.0
+uvicorn[standard]==0.38.0
+
 main
 uvicorn[standard]==0.27.0
+ main
 python-dotenv==1.0.0
 python-multipart==0.0.20
 openai==1.10.0
