@@ -1,0 +1,29 @@
+package com.github.models.inference.samples;
+
+import java.net.http.*;
+import java.net.URI;
+
+public class BasicGitHubAI {
+    public static void main(String[] args) throws Exception {
+        String apiKey = System.getenv("OPENAI_API_KEY");
+        String model = "gpt-5";
+
+        HttpClient client = HttpClient.newHttpClient();
+        String prompt = "Write a Java function that reverses a string";
+
+        String requestBody = "{ \"model\": \"" + model + "\", " +
+                             "\"messages\": [" +
+                             "{ \"role\": \"system\", \"content\": \"You are a helpful assistant.\" }," +
+                             "{ \"role\": \"user\", \"content\": \"" + prompt + "\" } ] }";
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+            .header("Authorization", "Bearer " + apiKey)
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+}

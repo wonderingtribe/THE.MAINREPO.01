@@ -17,249 +17,66 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-inter);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,h2,h3,h4,h5,h6 {
   font-family: var(--font-space);
   font-weight: 700;
 }
 
-/* Rainbow Text Animation */
-@keyframes rainbow {
-  0% { color: #ff0000; }
-  16% { color: #ff7f00; }
-  33% { color: #ffff00; }
-  50% { color: #00ff00; }
-  66% { color: #0000ff; }
-  83% { color: #4b0082; }
-  100% { color: #ff0000; }
-}
-
-@keyframes rainbow-static {
-  0% { color: #ff0000; }
-  16% { color: #ff7f00; }
-  33% { color: #ffff00; }
-  50% { color: #00ff00; }
-  66% { color: #0000ff; }
-  83% { color: #9400d3; }
-  100% { color: #ff0000; }
-}
-
-/* Rainbow gradient background for text */
-.rainbow-text {
-  background: linear-gradient(90deg, 
-    #ff0000 0%, 
-    #ff7f00 16%, 
-    #ffff00 33%, 
-    #00ff00 50%, 
-    #0000ff 66%, 
-    #9400d3 83%, 
-    #ff0000 100%);
+/* TIE-DYE Text Gradient */
+.tie-dye-text {
+  background: linear-gradient(
+    135deg,
+    #ff0000 0%,
+    #ff7f00 20%,
+    #ffff00 40%,
+    #00ff00 60%,
+    #0000ff 80%,
+    #9400d3 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: bold;
 }
 
-.rainbow-text-animate {
-  animation: rainbow 3s infinite;
+/* Tie-dye background sections */
+.tie-dye-bg {
+  background: radial-gradient(circle at top left,
+    #ff0000 0%, #ff7f00 25%, #ffff00 50%, #00ff00 75%, #0000ff 100%);
 }
 
-/* Individual rainbow colors for each character/word */
-.rainbow-r { color: #ff0000; } /* Red */
-.rainbow-o { color: #ff7f00; } /* Orange */
-.rainbow-y { color: #ffff00; } /* Yellow */
-.rainbow-g { color: #00ff00; } /* Green */
-.rainbow-b { color: #0000ff; } /* Blue */
-.rainbow-i { color: #4b0082; } /* Indigo */
-.rainbow-v { color: #9400d3; } /* Violet */
-
-/* Rainbow numbers */
-.rainbow-num {
-  background: linear-gradient(90deg, 
-    #ff0000 0%, 
-    #ff7f00 16%, 
-    #ffff00 33%, 
-    #00ff00 50%, 
-    #0000ff 66%, 
-    #9400d3 83%, 
-    #ff0000 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: bold;
-  font-size: 1.1em;
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3, #ff0000);
-}
-
-/* Custom animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    transform: translateX(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 127, 0, 0.6);
-  }
-  100% {
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.slide-in-left {
-  animation: slideInFromLeft 0.3s ease-in-out;
-}
-
-.slide-in-right {
-  animation: slideInFromRight 0.3s ease-in-out;
-}
-
-.glow {
-  animation: glow 2s infinite;
-}
-
-/* Tailwind custom components */
+/* Buttons */
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 text-white rounded-lg font-medium hover:from-red-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-200 shadow-sm hover:shadow-md;
-  }
-
-  .btn-secondary {
-    @apply px-4 py-2 bg-gray-200 text-transparent bg-clip-text font-medium bg-gradient-to-r from-red-500 to-purple-500 rounded-lg hover:bg-gray-300 transition-all duration-200;
-  }
-
-  .btn-icon {
-    @apply p-2 hover:bg-gray-100 rounded-lg transition-all duration-200;
+    @apply px-4 py-2 text-white font-medium rounded-lg shadow-md;
+    background: linear-gradient(
+      90deg,
+      #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3
+    );
+    background-size: 200% 200%;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-sm border-2 border-transparent bg-clip-padding hover:shadow-md transition-all duration-200;
-    background-image: linear-gradient(white, white), linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
+    @apply bg-white rounded-lg shadow-md border-2 border-transparent;
+    border-image: linear-gradient(
+      90deg,
+      #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3
+    ) 1;
+    border-style: solid;
   }
 
   .input-field {
-    @apply px-3 py-2 border-2 border-transparent rounded-lg text-sm focus:outline-none transition-all;
-    border-image: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3) 1;
+    @apply px-3 py-2 rounded-lg border-2 text-sm focus:outline-none;
+    border-image: linear-gradient(
+      90deg,
+      #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #9400d3
+    ) 1;
+    border-style: solid;
   }
-
-  .input-field:focus {
-    @apply ring-2 ring-offset-2;
-    box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1), 0 0 0 6px rgba(255, 127, 0, 0.05);
-  }
-
-  .panel-header {
-    @apply p-4 border-b-2 border-transparent flex items-center justify-between;
-    border-image: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff) 1;
-  }
-
-  .panel-content {
-    @apply p-4 space-y-3;
-  }
-
-  .rainbow-heading {
-    @apply text-4xl font-bold rainbow-text;
-  }
-
-  .rainbow-subheading {
-    @apply text-2xl font-bold rainbow-text;
-  }
-
-  .rainbow-label {
-    @apply text-sm font-semibold rainbow-text;
-  }
-}
-
-/* Rainbow gradient background for entire sections */
-.rainbow-bg {
-  background: linear-gradient(135deg,
-    rgba(255, 0, 0, 0.1) 0%,
-    rgba(255, 127, 0, 0.1) 16%,
-    rgba(255, 255, 0, 0.1) 33%,
-    rgba(0, 255, 0, 0.1) 50%,
-    rgba(0, 0, 255, 0.1) 66%,
-    rgba(148, 0, 211, 0.1) 100%);
-}
-
-/* Rainbow border effect */
-.rainbow-border {
-  border: 2px solid;
-  border-image: linear-gradient(90deg, 
-    #ff0000 0%, 
-    #ff7f00 16%, 
-    #ffff00 33%, 
-    #00ff00 50%, 
-    #0000ff 66%, 
-    #9400d3 100%) 1;
-}
-
-/* Rainbow shadow */
-.rainbow-shadow {
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3), 
-              0 4px 15px rgba(0, 0, 255, 0.2),
-              0 4px 15px rgba(148, 0, 211, 0.2);
-}
-
-/* Rainbow text on hover */
-.hover-rainbow:hover {
-  animation: rainbow 1s ease-in-out;
 }
