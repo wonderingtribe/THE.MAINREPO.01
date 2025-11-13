@@ -1,145 +1,80 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { Component, Page, Project } from '@/types';
-import { createClient } from '@supabase/supabase-js';
+import React, { useState, useCallback } from 'react';
+import { useBuilder } from '@/contexts/BuilderContext';
+import { ComponentPalette } from '@/components/builder/ComponentPalette';
+import { Canvas } from '@/components/builder/Canvas';
+import { PropertiesPanel } from '@/components/builder/PropertiesPanel';
+import { CodeExportModal } from '@/components/builder/CodeExportModal';
+import { FiSave, FiCode, FiEye, FiEyeOff } from 'react-icons/fi';
+import { ComponentType } from '@/types';
 
-interface BuilderContextType {
-  currentProject: Project | null;
-  currentPage: Page | null;
-  setCurrentPage: (page: Page | null) => void;
-  selectedComponent: Component | null;
-  setSelectedComponent: (component: Component | null) => void;
-  addComponent: (component: Component, parentId?: string) => void;
-  updateComponent: (componentId: string, updates: Partial<Component>) => void;
-  deleteComponent: (componentId: string) => void;
-  exportCode: () => string;
-  previewMode: boolean;
-  setPreviewMode: (mode: boolean) => void;
-}
+let componentCounter = 0;
 
-const BuilderContext = createContext<BuilderContextType | undefined>(undefined);
-
-export const useBuilder = () => {
-  const context = useContext(BuilderContext);
-  if (!context) throw new Error('useBuilder must be used within BuilderProvider');
-  return context;
+const getDefaultProps = (type: ComponentType) => {
+  switch (type) {
+    case 'text': return { children: 'Text content' };
+    case 'button': return { children: 'Button' };
+    case 'image': return { src: '/placeholder.jpg', alt: 'Image' };
+    case 'input': return { type: 'text', placeholder: 'Enter text...' };
+    default: return {};
+  }
 };
 
-interface BuilderProviderProps {
-  children: ReactNode;
-}
+const getDefaultStyles = (type: ComponentType) => {
+  switch (type) {
+    case 'container': return { padding: '20px', minHeight: '100px', border: '1px dashed #ccc' };
+    case 'text': return { fontSize: '16px', margin: '10px 0' };
+    case 'button': return { padding: '10px 20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' };
+    default: return {};
+  }
+};
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+export default function BuilderPage() {
+  const { currentProject, currentPage, addComponent, previewMode, setPreviewMode } = useBuilder();
+  const [showExportModal, setShowExportModal] = useState(false);
 
-export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children }) => {
-  const [currentProject, setCurrentProject] = useState<Project | null>(null);
-  const [currentPage, setCurrentPage] = useState<Page | null>(null);
-  const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
-  const [previewMode, setPreviewMode] = useState(false);
-
-  // Load projects from Supabase on mount
-  useEffect(() => {
-    const loadProjects = async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*, pages(*)')
-        .limit(1); // load first project
-      if (error) {
-        console.error('Supabase fetch error:', error);
-        return;
-      }
-      if (data && data.length > 0) {
-        const project = data[0] as Project;
-        setCurrentProject(project);
-        if (project.pages && project.pages.length > 0) {
-          setCurrentPage(project.pages[0]);
-        }
-      }
-    };
-    loadProjects();
-  }, []);
-
-  const addComponent = (component: Component, parentId?: string) => {
+  const handleComponentSelect = useCallback((type: ComponentType) => {
+    componentCounter += 1;
     if (!currentPage) return;
+    const newComponent = { id: `component-${componentCounter}`, type, props: getDefaultProps(type), styles: getDefaultStyles(type) };
+    addComponent(newComponent);
+  }, [addComponent, currentPage]);
 
-    const addToComponents = (components: Component[]): Component[] => {
-      if (!parentId) return [...components, component];
-      return components.map(c => {
-        if (c.id === parentId) {
-          return { ...c, children: [...(c.children || []), component] };
-        }
-        if (c.children) return { ...c, children: addToComponents(c.children) };
-        return c;
-      });
-    };
-
-    setCurrentPage({ ...currentPage, components: addToComponents(currentPage.components) });
-  };
-
-  const updateComponent = (componentId: string, updates: Partial<Component>) => {
-    if (!currentPage) return;
-
-    const updateInComponents = (components: Component[]): Component[] =>
-      components.map(c => {
-        if (c.id === componentId) return { ...c, ...updates };
-        if (c.children) return { ...c, children: updateInComponents(c.children) };
-        return c;
-      });
-
-    setCurrentPage({ ...currentPage, components: updateInComponents(currentPage.components) });
-  };
-
-  const deleteComponent = (componentId: string) => {
-    if (!currentPage) return;
-
-    const deleteFromComponents = (components: Component[]): Component[] =>
-      components
-        .filter(c => c.id !== componentId)
-        .map(c => ({ ...c, children: c.children ? deleteFromComponents(c.children) : undefined }));
-
-    setCurrentPage({ ...currentPage, components: deleteFromComponents(currentPage.components) });
-    if (selectedComponent?.id === componentId) setSelectedComponent(null);
-  };
-
-  const exportCode = (): string => {
-    if (!currentPage) return '';
-
-    const generateComponentCode = (component: Component, indent = 0): string => {
-      const indentation = '  '.repeat(indent);
-      const props = Object.entries(component.props)
-        .map(([k, v]) => `${k}="${v}"`)
-        .join(' ');
-      const styleString = component.styles ? `style={${JSON.stringify(component.styles)}}` : '';
-      const openTag = `${indentation}<${component.type} ${props} ${styleString}>`;
-      const children = component.children?.map(c => generateComponentCode(c, indent + 1)).join('\n') || '';
-      const closeTag = `${indentation}</${component.type}>`;
-      return children ? `${openTag}\n${children}\n${closeTag}` : `${openTag}${closeTag}`;
-    };
-
-    return `export default function ${currentPage.name}() {\n  return (\n    <div>\n${currentPage.components.map(c => generateComponentCode(c)).join('\n')}\n    </div>\n  );\n}`;
-  };
+  if (!currentProject || !currentPage) return <div className="h-screen flex items-center justify-center">Loading project...</div>;
 
   return (
-    <BuilderContext.Provider
-      value={{
-        currentProject,
-        currentPage,
-        setCurrentPage,
-        selectedComponent,
-        setSelectedComponent,
-        addComponent,
-        updateComponent,
-        deleteComponent,
-        exportCode,
-        previewMode,
-        setPreviewMode,
-      }}
-    >
-      {children}
-    </BuilderContext.Provider>
+    <div className="h-screen flex flex-col">
+      {/* Toolbar */}
+      <div className="bg-gray-800 text-white px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-semibold">{currentProject.name}</h1>
+          <span className="text-gray-400">|</span>
+          <span className="text-sm text-gray-300">{currentPage.name}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setPreviewMode(!previewMode)} className="flex items-center gap-2 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">
+            {previewMode ? <FiEyeOff /> : <FiEye />}
+            {previewMode ? 'Edit' : 'Preview'}
+          </button>
+          <button onClick={() => setShowExportModal(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">
+            <FiCode /> Export Code
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+            <FiSave /> Save
+          </button>
+        </div>
+      </div>
+
+      {/* Builder */}
+      <div className="flex-1 flex overflow-hidden">
+        {!previewMode && <ComponentPalette onSelectComponent={handleComponentSelect} />}
+        <Canvas components={currentPage.components || []} />
+        {!previewMode && <PropertiesPanel />}
+      </div>
+
+      {/* Export modal */}
+      <CodeExportModal isOpen={showExportModal} onClose={() => setShowExportModal(false)} />
+    </div>
   );
-};
+          }
