@@ -1,11 +1,33 @@
-'use client'
+'use client';
 
-import React from 'react'
+import React, { ReactNode, useEffect } from 'react';
+import { BuilderProvider } from '@/contexts/BuilderContext';
+import { AppProvider, useApp } from '@/contexts/AppContext';
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen">
-      {children}
-    </div>
-  )
+interface ProvidersProps {
+  children: ReactNode;
 }
+
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <AppProvider>
+      <BuilderProviderWithInit>
+        {children}
+      </BuilderProviderWithInit>
+    </AppProvider>
+  );
+}
+
+// Wrap BuilderProvider to initialize default project/page
+const BuilderProviderWithInit: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { currentProject, createProject } = useApp();
+
+  useEffect(() => {
+    if (!currentProject) {
+      // Initialize a default project if none exists
+      createProject('My Website', 'A new website project');
+    }
+  }, [currentProject, createProject]);
+
+  return <BuilderProvider>{children}</BuilderProvider>;
+};
